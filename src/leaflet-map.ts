@@ -1,4 +1,5 @@
 import 'leaflet-area-select';
+import 'leaflet-fullscreen';
 import './leaflet-map.css';
 
 import { DOM, autoinject, bindable, bindingMode, children, inlineView } from 'aurelia-framework';
@@ -14,7 +15,9 @@ export class LeafletMapCustomElement {
     map: Map;
 
     @bindable()
-    options: MapOptions;
+    options: MapOptions = {
+        fullscreenControl: true
+    };
 
     @bindable({defaultBindingMode: bindingMode.twoWay})
     api: LeafletApi;

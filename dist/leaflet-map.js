@@ -8,11 +8,15 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 import 'leaflet-area-select';
+import 'leaflet-fullscreen';
 import './leaflet-map.css';
 import { DOM, autoinject, bindable, bindingMode, children, inlineView } from 'aurelia-framework';
 import { control, latLngBounds, map, tileLayer } from 'leaflet';
 var LeafletMapCustomElement = /** @class */ (function () {
     function LeafletMapCustomElement(element) {
+        this.options = {
+            fullscreenControl: true
+        };
         this.wasFittedToBounds = false;
         this.element = element;
     }

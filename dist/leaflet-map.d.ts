@@ -1,4 +1,5 @@
 import 'leaflet-area-select';
+import 'leaflet-fullscreen';
 import './leaflet-map.css';
 import { LatLngBounds, Map, MapOptions, Marker } from 'leaflet';
 import { LatLng } from 'leaflet';
