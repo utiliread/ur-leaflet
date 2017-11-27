@@ -14,7 +14,6 @@ export declare class LeafletMapCustomElement {
         model: any;
     }[];
     bounds: LatLngBounds;
-    private wasFittedToBounds;
     constructor(element: Element);
     bind(): void;
     attached(): void;

@@ -27,8 +27,6 @@ export class LeafletMapCustomElement {
 
     bounds: LatLngBounds;
 
-    private wasFittedToBounds = false;
-
     constructor(element: Element) {
         this.element = element as HTMLElement;
     }
@@ -55,7 +53,6 @@ export class LeafletMapCustomElement {
 
         if (this.bounds) {
             this.map.fitBounds(this.bounds);
-            this.wasFittedToBounds = true;
         }
 
         this.map.on('areaselected', event => {
@@ -84,9 +81,8 @@ export class LeafletMapCustomElement {
     markersChanged() {
         this.bounds = latLngBounds(this.markers.map(x => x.marker.getLatLng()));
 
-        if (this.bounds && this.map && !this.wasFittedToBounds) {
+        if (this.bounds && this.map) {
             this.map.fitBounds(this.bounds);
-            this.wasFittedToBounds = true;
         }
     }
 

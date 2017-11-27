@@ -17,7 +17,6 @@ var LeafletMapCustomElement = /** @class */ (function () {
         this.options = {
             fullscreenControl: true
         };
-        this.wasFittedToBounds = false;
         this.element = element;
     }
     LeafletMapCustomElement.prototype.bind = function () {
@@ -39,7 +38,6 @@ var LeafletMapCustomElement = /** @class */ (function () {
         control.layers(baseLayers).addTo(this.map);
         if (this.bounds) {
             this.map.fitBounds(this.bounds);
-            this.wasFittedToBounds = true;
         }
         this.map.on('areaselected', function (event) {
             var bounds = event.bounds;
@@ -61,9 +59,8 @@ var LeafletMapCustomElement = /** @class */ (function () {
     };
     LeafletMapCustomElement.prototype.markersChanged = function () {
         this.bounds = latLngBounds(this.markers.map(function (x) { return x.marker.getLatLng(); }));
-        if (this.bounds && this.map && !this.wasFittedToBounds) {
+        if (this.bounds && this.map) {
             this.map.fitBounds(this.bounds);
-            this.wasFittedToBounds = true;
         }
     };
     LeafletMapCustomElement.prototype.goto = function (center, zoom) {
