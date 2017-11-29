@@ -1,3 +1,4 @@
+import './circle-marker.css';
 import { CircleMarker, CircleMarkerOptions } from 'leaflet';
 import { LeafletMapCustomElement } from './leaflet-map';
 export declare class CircleMarkerCustomElement {

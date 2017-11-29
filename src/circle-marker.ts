@@ -1,3 +1,5 @@
+import './circle-marker.css';
+
 import { CircleMarker, CircleMarkerOptions, Layer, LeafletEvent, LeafletMouseEvent, PathOptions, circleMarker } from 'leaflet';
 import { DOM, Disposable, autoinject, bindable, bindingMode, noView } from 'aurelia-framework';
 

@@ -1,3 +1,4 @@
+import './default-marker.css';
 import { Marker, MarkerOptions } from 'leaflet';
 import { LeafletMapCustomElement } from './leaflet-map';
 export declare class DefaultMarkerCustomElement {

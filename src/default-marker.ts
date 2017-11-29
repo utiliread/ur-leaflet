@@ -1,3 +1,5 @@
+import './default-marker.css';
+
 import { DOM, Disposable, autoinject, bindable, bindingMode, noView } from 'aurelia-framework';
 import { Layer, LeafletEvent, LeafletMouseEvent, Marker, MarkerOptions, PathOptions, marker } from 'leaflet';
 
