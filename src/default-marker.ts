@@ -1,11 +1,18 @@
 import './default-marker.css';
 
 import { DOM, Disposable, autoinject, bindable, bindingMode, noView } from 'aurelia-framework';
-import { Layer, LeafletEvent, LeafletMouseEvent, Marker, MarkerOptions, PathOptions, marker } from 'leaflet';
+import { Icon, Layer, LeafletEvent, LeafletMouseEvent, Marker, MarkerOptions, PathOptions, marker } from 'leaflet';
 
 import { LeafletMapCustomElement } from './leaflet-map';
 import { extend } from 'lodash';
 import { listen } from './utils';
+
+// https://github.com/Leaflet/Leaflet/issues/4968#issuecomment-299044745
+Icon.Default.mergeOptions({
+  iconRetinaUrl: require('leaflet/dist/images/marker-icon-2x.png'),
+  iconUrl: require('leaflet/dist/images/marker-icon.png'),
+  shadowUrl: require('leaflet/dist/images/marker-shadow.png'),
+});
 
 @autoinject()
 @noView()
