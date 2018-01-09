@@ -13,75 +13,72 @@ import { DOM, autoinject, bindable, bindingMode, noView } from 'aurelia-framewor
 import { LeafletMapCustomElement } from './leaflet-map';
 import { extend } from 'lodash';
 import { listen } from './utils';
-var CircleMarkerCustomElement = /** @class */ (function () {
-    function CircleMarkerCustomElement(element, map) {
+let CircleMarkerCustomElement = class CircleMarkerCustomElement {
+    constructor(element, map) {
         this.element = element;
         this.map = map;
     }
-    CircleMarkerCustomElement.prototype.bind = function () {
+    bind() {
         this.marker = circleMarker([this.lat, this.lng], this.options);
-    };
-    CircleMarkerCustomElement.prototype.attached = function () {
-        var _this = this;
+    }
+    attached() {
         this.map.map.addLayer(this.marker);
         this.disposables = [
-            listen(this.marker, 'click', function (event) {
-                var customEvent = DOM.createCustomEvent('click', {
+            listen(this.marker, 'click', (event) => {
+                let customEvent = DOM.createCustomEvent('click', {
                     bubbles: true,
-                    detail: _this.model
+                    detail: this.model
                 });
                 // Leaflet requires clientX and clientY to be present when dispatching events
                 extend(customEvent, {
                     clientX: event.originalEvent.clientX,
                     clientY: event.originalEvent.clientY
                 });
-                _this.element.dispatchEvent(customEvent);
+                this.element.dispatchEvent(customEvent);
             })
         ];
-    };
-    CircleMarkerCustomElement.prototype.detached = function () {
+    }
+    detached() {
         if (this.map && this.map.map) {
             this.map.map.removeLayer(this.marker);
         }
-        for (var _i = 0, _a = this.disposables; _i < _a.length; _i++) {
-            var disposable = _a[_i];
+        for (let disposable of this.disposables) {
             disposable.dispose();
         }
-    };
-    CircleMarkerCustomElement.prototype.unbind = function () {
+    }
+    unbind() {
         this.marker.remove();
         this.marker = null;
-    };
-    CircleMarkerCustomElement.prototype.optionsChanged = function () {
+    }
+    optionsChanged() {
         if (this.options) {
             this.marker.setStyle(this.options);
         }
-    };
-    __decorate([
-        bindable({ defaultBindingMode: bindingMode.twoWay }),
-        __metadata("design:type", Number)
-    ], CircleMarkerCustomElement.prototype, "lat", void 0);
-    __decorate([
-        bindable({ defaultBindingMode: bindingMode.twoWay }),
-        __metadata("design:type", Number)
-    ], CircleMarkerCustomElement.prototype, "lng", void 0);
-    __decorate([
-        bindable(),
-        __metadata("design:type", Object)
-    ], CircleMarkerCustomElement.prototype, "model", void 0);
-    __decorate([
-        bindable(),
-        __metadata("design:type", Object)
-    ], CircleMarkerCustomElement.prototype, "options", void 0);
-    __decorate([
-        bindable(),
-        __metadata("design:type", Object)
-    ], CircleMarkerCustomElement.prototype, "click", void 0);
-    CircleMarkerCustomElement = __decorate([
-        autoinject(),
-        noView(),
-        __metadata("design:paramtypes", [Element, LeafletMapCustomElement])
-    ], CircleMarkerCustomElement);
-    return CircleMarkerCustomElement;
-}());
+    }
+};
+__decorate([
+    bindable({ defaultBindingMode: bindingMode.twoWay }),
+    __metadata("design:type", Number)
+], CircleMarkerCustomElement.prototype, "lat", void 0);
+__decorate([
+    bindable({ defaultBindingMode: bindingMode.twoWay }),
+    __metadata("design:type", Number)
+], CircleMarkerCustomElement.prototype, "lng", void 0);
+__decorate([
+    bindable(),
+    __metadata("design:type", Object)
+], CircleMarkerCustomElement.prototype, "model", void 0);
+__decorate([
+    bindable(),
+    __metadata("design:type", Object)
+], CircleMarkerCustomElement.prototype, "options", void 0);
+__decorate([
+    bindable(),
+    __metadata("design:type", Object)
+], CircleMarkerCustomElement.prototype, "click", void 0);
+CircleMarkerCustomElement = __decorate([
+    autoinject(),
+    noView(),
+    __metadata("design:paramtypes", [Element, LeafletMapCustomElement])
+], CircleMarkerCustomElement);
 export { CircleMarkerCustomElement };

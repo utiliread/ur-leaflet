@@ -13,58 +13,56 @@ import { marker } from 'leaflet';
 import { LeafletMapCustomElement } from './leaflet-map';
 import { extend } from 'lodash';
 import { listen } from './utils';
-var DefaultMarkerCustomElement = /** @class */ (function () {
-    function DefaultMarkerCustomElement(element, map) {
+let DefaultMarkerCustomElement = class DefaultMarkerCustomElement {
+    constructor(element, map) {
         this.element = element;
         this.map = map;
     }
-    DefaultMarkerCustomElement.prototype.bind = function () {
+    bind() {
         this.marker = marker([this.lat, this.lng], this.options);
-    };
-    DefaultMarkerCustomElement.prototype.attached = function () {
-        var _this = this;
+    }
+    attached() {
         this.map.map.addLayer(this.marker);
         this.disposables = [
-            listen(this.marker, 'click', function (event) {
-                var customEvent = DOM.createCustomEvent('click', {
+            listen(this.marker, 'click', (event) => {
+                let customEvent = DOM.createCustomEvent('click', {
                     bubbles: true,
-                    detail: _this.model
+                    detail: this.model
                 });
                 // Leaflet requires clientX and clientY to be present when dispatching events
                 extend(customEvent, {
                     clientX: event.originalEvent.clientX,
                     clientY: event.originalEvent.clientY
                 });
-                _this.element.dispatchEvent(customEvent);
+                this.element.dispatchEvent(customEvent);
             }),
-            listen(this.marker, 'drag', function (event) {
-                if (_this.options && _this.options.draggable) {
-                    var position = event.latlng;
-                    _this.lat = position.lat;
-                    _this.lng = position.lng;
+            listen(this.marker, 'drag', (event) => {
+                if (this.options && this.options.draggable) {
+                    let position = event.latlng;
+                    this.lat = position.lat;
+                    this.lng = position.lng;
                 }
             })
         ];
-    };
-    DefaultMarkerCustomElement.prototype.detached = function () {
+    }
+    detached() {
         if (this.map && this.map.map) {
             this.map.map.removeLayer(this.marker);
         }
-        for (var _i = 0, _a = this.disposables; _i < _a.length; _i++) {
-            var disposable = _a[_i];
+        for (let disposable of this.disposables) {
             disposable.dispose();
         }
-    };
-    DefaultMarkerCustomElement.prototype.unbind = function () {
+    }
+    unbind() {
         this.marker.remove();
         this.marker = null;
-    };
-    DefaultMarkerCustomElement.prototype.positionChanged = function () {
+    }
+    positionChanged() {
         if (this.marker) {
             this.marker.setLatLng([this.lat, this.lng]);
         }
-    };
-    DefaultMarkerCustomElement.prototype.optionsChanged = function () {
+    }
+    optionsChanged() {
         if (this.options) {
             if (this.options.draggable) {
                 this.marker.dragging.enable();
@@ -73,32 +71,31 @@ var DefaultMarkerCustomElement = /** @class */ (function () {
                 this.marker.dragging.disable();
             }
         }
-    };
-    __decorate([
-        bindable({ defaultBindingMode: bindingMode.twoWay, changeHandler: 'positionChanged' }),
-        __metadata("design:type", Number)
-    ], DefaultMarkerCustomElement.prototype, "lat", void 0);
-    __decorate([
-        bindable({ defaultBindingMode: bindingMode.twoWay, changeHandler: 'positionChanged' }),
-        __metadata("design:type", Number)
-    ], DefaultMarkerCustomElement.prototype, "lng", void 0);
-    __decorate([
-        bindable(),
-        __metadata("design:type", Object)
-    ], DefaultMarkerCustomElement.prototype, "model", void 0);
-    __decorate([
-        bindable(),
-        __metadata("design:type", Object)
-    ], DefaultMarkerCustomElement.prototype, "options", void 0);
-    __decorate([
-        bindable(),
-        __metadata("design:type", Object)
-    ], DefaultMarkerCustomElement.prototype, "click", void 0);
-    DefaultMarkerCustomElement = __decorate([
-        autoinject(),
-        noView(),
-        __metadata("design:paramtypes", [Element, LeafletMapCustomElement])
-    ], DefaultMarkerCustomElement);
-    return DefaultMarkerCustomElement;
-}());
+    }
+};
+__decorate([
+    bindable({ defaultBindingMode: bindingMode.twoWay, changeHandler: 'positionChanged' }),
+    __metadata("design:type", Number)
+], DefaultMarkerCustomElement.prototype, "lat", void 0);
+__decorate([
+    bindable({ defaultBindingMode: bindingMode.twoWay, changeHandler: 'positionChanged' }),
+    __metadata("design:type", Number)
+], DefaultMarkerCustomElement.prototype, "lng", void 0);
+__decorate([
+    bindable(),
+    __metadata("design:type", Object)
+], DefaultMarkerCustomElement.prototype, "model", void 0);
+__decorate([
+    bindable(),
+    __metadata("design:type", Object)
+], DefaultMarkerCustomElement.prototype, "options", void 0);
+__decorate([
+    bindable(),
+    __metadata("design:type", Object)
+], DefaultMarkerCustomElement.prototype, "click", void 0);
+DefaultMarkerCustomElement = __decorate([
+    autoinject(),
+    noView(),
+    __metadata("design:paramtypes", [Element, LeafletMapCustomElement])
+], DefaultMarkerCustomElement);
 export { DefaultMarkerCustomElement };

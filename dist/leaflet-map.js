@@ -12,22 +12,21 @@ import 'leaflet-fullscreen';
 import './leaflet-map.css';
 import { DOM, autoinject, bindable, bindingMode, children, inlineView } from 'aurelia-framework';
 import { control, latLngBounds, map, tileLayer } from 'leaflet';
-var LeafletMapCustomElement = /** @class */ (function () {
-    function LeafletMapCustomElement(element) {
+let LeafletMapCustomElement = class LeafletMapCustomElement {
+    constructor(element) {
         this.options = {
             fullscreenControl: true
         };
         this.element = element;
     }
-    LeafletMapCustomElement.prototype.bind = function () {
+    bind() {
         this.api = {
             goto: this.goto.bind(this)
         };
-    };
-    LeafletMapCustomElement.prototype.attached = function () {
-        var _this = this;
+    }
+    attached() {
         this.map = map(this.element, this.options);
-        var baseLayers = {
+        let baseLayers = {
             "Kort": tileLayer('//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
             }).addTo(this.map),
@@ -39,31 +38,31 @@ var LeafletMapCustomElement = /** @class */ (function () {
         if (this.bounds) {
             this.map.fitBounds(this.bounds);
         }
-        this.map.on('areaselected', function (event) {
-            var bounds = event.bounds;
-            var selected = _this.markers.filter(function (x) { return bounds.contains(x.marker.getLatLng()); }).map(function (x) { return x.model; });
-            var detail = {
+        this.map.on('areaselected', event => {
+            let bounds = event.bounds;
+            let selected = this.markers.filter(x => bounds.contains(x.marker.getLatLng())).map(x => x.model);
+            let detail = {
                 bounds: bounds,
                 selected: selected
             };
-            var areaSelectedEvent = DOM.createCustomEvent('area-selected', {
+            let areaSelectedEvent = DOM.createCustomEvent('area-selected', {
                 bubbles: true,
                 detail: detail
             });
-            _this.element.dispatchEvent(areaSelectedEvent);
+            this.element.dispatchEvent(areaSelectedEvent);
         });
-    };
-    LeafletMapCustomElement.prototype.detached = function () {
+    }
+    detached() {
         this.map.remove();
         this.map = null;
-    };
-    LeafletMapCustomElement.prototype.markersChanged = function () {
-        this.bounds = latLngBounds(this.markers.map(function (x) { return x.marker.getLatLng(); }));
+    }
+    markersChanged() {
+        this.bounds = latLngBounds(this.markers.map(x => x.marker.getLatLng()));
         if (this.bounds && this.map) {
             this.map.fitBounds(this.bounds);
         }
-    };
-    LeafletMapCustomElement.prototype.goto = function (center, zoom) {
+    }
+    goto(center, zoom) {
         if (zoom) {
             this.map.setView(center, zoom, {
                 animate: true,
@@ -73,24 +72,23 @@ var LeafletMapCustomElement = /** @class */ (function () {
         else {
             this.map.panTo(center);
         }
-    };
-    __decorate([
-        bindable(),
-        __metadata("design:type", Object)
-    ], LeafletMapCustomElement.prototype, "options", void 0);
-    __decorate([
-        bindable({ defaultBindingMode: bindingMode.twoWay }),
-        __metadata("design:type", Object)
-    ], LeafletMapCustomElement.prototype, "api", void 0);
-    __decorate([
-        children('*'),
-        __metadata("design:type", Array)
-    ], LeafletMapCustomElement.prototype, "markers", void 0);
-    LeafletMapCustomElement = __decorate([
-        autoinject(),
-        inlineView('<template><slot></slot></template>'),
-        __metadata("design:paramtypes", [Element])
-    ], LeafletMapCustomElement);
-    return LeafletMapCustomElement;
-}());
+    }
+};
+__decorate([
+    bindable(),
+    __metadata("design:type", Object)
+], LeafletMapCustomElement.prototype, "options", void 0);
+__decorate([
+    bindable({ defaultBindingMode: bindingMode.twoWay }),
+    __metadata("design:type", Object)
+], LeafletMapCustomElement.prototype, "api", void 0);
+__decorate([
+    children('*'),
+    __metadata("design:type", Array)
+], LeafletMapCustomElement.prototype, "markers", void 0);
+LeafletMapCustomElement = __decorate([
+    autoinject(),
+    inlineView('<template><slot></slot></template>'),
+    __metadata("design:paramtypes", [Element])
+], LeafletMapCustomElement);
 export { LeafletMapCustomElement };
