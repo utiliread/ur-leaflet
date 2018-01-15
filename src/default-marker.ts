@@ -8,6 +8,8 @@ import { extend } from 'lodash';
 import { listen } from './utils';
 
 // https://github.com/Leaflet/Leaflet/issues/4968#issuecomment-299044745
+let defaultIconPrototype: any = Icon.Default.prototype;
+delete defaultIconPrototype._getIconUrl;
 Icon.Default.mergeOptions({
   iconRetinaUrl: require('leaflet/dist/images/marker-icon-2x.png'),
   iconUrl: require('leaflet/dist/images/marker-icon.png'),
