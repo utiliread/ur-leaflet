@@ -5,6 +5,7 @@ import './leaflet-map.css';
 import { DOM, autoinject, bindable, bindingMode, children, inlineView } from 'aurelia-framework';
 import { LatLngBounds, Map, MapOptions, Marker, control, latLngBounds, map, tileLayer } from 'leaflet';
 
+import { AreaSelectedEventDetail } from './area-selected-event';
 import { LatLng } from 'leaflet';
 import { LeafletApi } from './leaflet-api';
 
@@ -59,7 +60,7 @@ export class LeafletMapCustomElement {
             let bounds = (<any>event).bounds as LatLngBounds;
             let selected = this.markers.filter(x => bounds.contains(x.marker.getLatLng())).map(x => x.model);
 
-            let detail = {
+            let detail: AreaSelectedEventDetail = {
                 bounds: bounds,
                 selected: selected
             };
