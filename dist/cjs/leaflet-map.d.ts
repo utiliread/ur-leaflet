@@ -6,14 +6,14 @@ import { LatLng } from 'leaflet';
 import { LeafletApi } from './leaflet-api';
 export declare class LeafletMapCustomElement {
     element: HTMLElement;
-    map: Map;
     options: MapOptions;
     api: LeafletApi;
     markers: {
         marker: Marker;
         model: any;
     }[];
-    bounds: LatLngBounds;
+    bounds: LatLngBounds | undefined;
+    map: Map;
     constructor(element: Element);
     bind(): void;
     attached(): void;

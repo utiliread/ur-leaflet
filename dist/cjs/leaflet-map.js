@@ -1,3 +1,4 @@
+"use strict";
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -7,16 +8,18 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-import 'leaflet-area-select';
-import 'leaflet-fullscreen';
-import './leaflet-map.css';
-import { DOM, autoinject, bindable, bindingMode, children, inlineView } from 'aurelia-framework';
-import { control, latLngBounds, map, tileLayer } from 'leaflet';
+Object.defineProperty(exports, "__esModule", { value: true });
+require("leaflet-area-select");
+require("leaflet-fullscreen");
+require("./leaflet-map.css");
+const aurelia_framework_1 = require("aurelia-framework");
+const leaflet_1 = require("leaflet");
 let LeafletMapCustomElement = class LeafletMapCustomElement {
     constructor(element) {
         this.options = {
             fullscreenControl: true
         };
+        this.bounds = undefined;
         this.element = element;
     }
     bind() {
@@ -25,16 +28,16 @@ let LeafletMapCustomElement = class LeafletMapCustomElement {
         };
     }
     attached() {
-        this.map = map(this.element, this.options);
+        this.map = leaflet_1.map(this.element, this.options);
         let baseLayers = {
-            "Kort": tileLayer('//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            "Kort": leaflet_1.tileLayer('//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
             }).addTo(this.map),
-            "Satellit": tileLayer('//server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+            "Satellit": leaflet_1.tileLayer('//server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
                 attribution: '&copy; <a href="http://www.esri.com">Esri</a>'
             })
         };
-        control.layers(baseLayers).addTo(this.map);
+        leaflet_1.control.layers(baseLayers).addTo(this.map);
         if (this.bounds) {
             this.map.fitBounds(this.bounds);
         }
@@ -45,7 +48,7 @@ let LeafletMapCustomElement = class LeafletMapCustomElement {
                 bounds: bounds,
                 selected: selected
             };
-            let areaSelectedEvent = DOM.createCustomEvent('area-selected', {
+            let areaSelectedEvent = aurelia_framework_1.DOM.createCustomEvent('area-selected', {
                 bubbles: true,
                 detail: detail
             });
@@ -54,10 +57,10 @@ let LeafletMapCustomElement = class LeafletMapCustomElement {
     }
     detached() {
         this.map.remove();
-        this.map = null;
+        delete this.map;
     }
     markersChanged() {
-        this.bounds = latLngBounds(this.markers.map(x => x.marker.getLatLng()));
+        this.bounds = leaflet_1.latLngBounds(this.markers.map(x => x.marker.getLatLng()));
         if (this.bounds && this.map) {
             this.map.fitBounds(this.bounds);
         }
@@ -75,20 +78,21 @@ let LeafletMapCustomElement = class LeafletMapCustomElement {
     }
 };
 __decorate([
-    bindable(),
+    aurelia_framework_1.bindable(),
     __metadata("design:type", Object)
 ], LeafletMapCustomElement.prototype, "options", void 0);
 __decorate([
-    bindable({ defaultBindingMode: bindingMode.twoWay }),
+    aurelia_framework_1.bindable({ defaultBindingMode: aurelia_framework_1.bindingMode.twoWay }),
     __metadata("design:type", Object)
 ], LeafletMapCustomElement.prototype, "api", void 0);
 __decorate([
-    children('*'),
+    aurelia_framework_1.children('*'),
     __metadata("design:type", Array)
 ], LeafletMapCustomElement.prototype, "markers", void 0);
 LeafletMapCustomElement = __decorate([
-    autoinject(),
-    inlineView('<template><slot></slot></template>'),
+    aurelia_framework_1.autoinject(),
+    aurelia_framework_1.inlineView('<template><slot></slot></template>'),
     __metadata("design:paramtypes", [Element])
 ], LeafletMapCustomElement);
-export { LeafletMapCustomElement };
+exports.LeafletMapCustomElement = LeafletMapCustomElement;
+//# sourceMappingURL=leaflet-map.js.map

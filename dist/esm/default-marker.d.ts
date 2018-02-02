@@ -7,8 +7,7 @@ export declare class DefaultMarkerCustomElement {
     lat: number;
     lng: number;
     model: any;
-    options: MarkerOptions;
-    click: any;
+    options: MarkerOptions | undefined;
     marker: Marker;
     private disposables;
     constructor(element: Element, map: LeafletMapCustomElement);

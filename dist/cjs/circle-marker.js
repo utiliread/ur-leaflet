@@ -1,3 +1,4 @@
+"use strict";
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -7,30 +8,33 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-import './circle-marker.css';
-import { circleMarker } from 'leaflet';
-import { DOM, autoinject, bindable, bindingMode, noView } from 'aurelia-framework';
-import { LeafletMapCustomElement } from './leaflet-map';
-import { extend } from 'lodash';
-import { listen } from './utils';
+Object.defineProperty(exports, "__esModule", { value: true });
+require("./circle-marker.css");
+const leaflet_1 = require("leaflet");
+const aurelia_framework_1 = require("aurelia-framework");
+const leaflet_map_1 = require("./leaflet-map");
+const lodash_1 = require("lodash");
+const utils_1 = require("./utils");
 let CircleMarkerCustomElement = class CircleMarkerCustomElement {
     constructor(element, map) {
         this.element = element;
         this.map = map;
+        this.lat = 0;
+        this.lng = 0;
     }
     bind() {
-        this.marker = circleMarker([this.lat, this.lng], this.options);
+        this.marker = leaflet_1.circleMarker([this.lat, this.lng], this.options);
     }
     attached() {
         this.map.map.addLayer(this.marker);
         this.disposables = [
-            listen(this.marker, 'click', (event) => {
-                let customEvent = DOM.createCustomEvent('click', {
+            utils_1.listen(this.marker, 'click', (event) => {
+                let customEvent = aurelia_framework_1.DOM.createCustomEvent('click', {
                     bubbles: true,
                     detail: this.model
                 });
                 // Leaflet requires clientX and clientY to be present when dispatching events
-                extend(customEvent, {
+                lodash_1.extend(customEvent, {
                     clientX: event.originalEvent.clientX,
                     clientY: event.originalEvent.clientY
                 });
@@ -48,7 +52,12 @@ let CircleMarkerCustomElement = class CircleMarkerCustomElement {
     }
     unbind() {
         this.marker.remove();
-        this.marker = null;
+        delete this.marker;
+    }
+    positionChanged() {
+        if (this.marker) {
+            this.marker.setLatLng([this.lat, this.lng]);
+        }
     }
     optionsChanged() {
         if (this.options) {
@@ -57,28 +66,25 @@ let CircleMarkerCustomElement = class CircleMarkerCustomElement {
     }
 };
 __decorate([
-    bindable({ defaultBindingMode: bindingMode.twoWay }),
+    aurelia_framework_1.bindable({ defaultBindingMode: aurelia_framework_1.bindingMode.twoWay, changeHandler: 'positionChanged' }),
     __metadata("design:type", Number)
 ], CircleMarkerCustomElement.prototype, "lat", void 0);
 __decorate([
-    bindable({ defaultBindingMode: bindingMode.twoWay }),
+    aurelia_framework_1.bindable({ defaultBindingMode: aurelia_framework_1.bindingMode.twoWay, changeHandler: 'positionChanged' }),
     __metadata("design:type", Number)
 ], CircleMarkerCustomElement.prototype, "lng", void 0);
 __decorate([
-    bindable(),
+    aurelia_framework_1.bindable(),
     __metadata("design:type", Object)
 ], CircleMarkerCustomElement.prototype, "model", void 0);
 __decorate([
-    bindable(),
+    aurelia_framework_1.bindable(),
     __metadata("design:type", Object)
 ], CircleMarkerCustomElement.prototype, "options", void 0);
-__decorate([
-    bindable(),
-    __metadata("design:type", Object)
-], CircleMarkerCustomElement.prototype, "click", void 0);
 CircleMarkerCustomElement = __decorate([
-    autoinject(),
-    noView(),
-    __metadata("design:paramtypes", [Element, LeafletMapCustomElement])
+    aurelia_framework_1.autoinject(),
+    aurelia_framework_1.noView(),
+    __metadata("design:paramtypes", [Element, leaflet_map_1.LeafletMapCustomElement])
 ], CircleMarkerCustomElement);
-export { CircleMarkerCustomElement };
+exports.CircleMarkerCustomElement = CircleMarkerCustomElement;
+//# sourceMappingURL=circle-marker.js.map

@@ -4,3 +4,4 @@ export function listen(layer, type, handler) {
         dispose: () => layer.off(type, handler)
     };
 }
+//# sourceMappingURL=utils.js.map

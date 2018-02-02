@@ -10,23 +10,20 @@ import { listen } from './utils';
 @autoinject()
 @noView()
 export class CircleMarkerCustomElement {
-    @bindable({ defaultBindingMode: bindingMode.twoWay })
-    lat: number;
+    @bindable({ defaultBindingMode: bindingMode.twoWay, changeHandler: 'positionChanged' })
+    lat: number = 0;
 
-    @bindable({ defaultBindingMode: bindingMode.twoWay })
-    lng: number;
+    @bindable({ defaultBindingMode: bindingMode.twoWay, changeHandler: 'positionChanged' })
+    lng: number = 0;
 
     @bindable()
     model: any;
 
     @bindable()
-    options: CircleMarkerOptions;
+    options: CircleMarkerOptions | undefined;
 
-    @bindable()
-    click: any
-
-    marker: CircleMarker;
-    private disposables: Disposable[];
+    marker!: CircleMarker;
+    private disposables!: Disposable[];
 
     constructor(private element: Element, private map: LeafletMapCustomElement) {
     }
@@ -68,7 +65,13 @@ export class CircleMarkerCustomElement {
 
     unbind() {
         this.marker.remove();
-        this.marker = null;
+        delete this.marker;
+    }
+
+    positionChanged() {
+        if (this.marker) {
+            this.marker.setLatLng([this.lat, this.lng]);
+        }
     }
 
     optionsChanged() {

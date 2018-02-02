@@ -6,3 +6,4 @@ export function configure(frameworkConfiguration) {
         PLATFORM.moduleName('./default-marker')
     ]);
 }
+//# sourceMappingURL=index.js.map

@@ -11,31 +11,28 @@ import { listen } from './utils';
 let defaultIconPrototype: any = Icon.Default.prototype;
 delete defaultIconPrototype._getIconUrl;
 Icon.Default.mergeOptions({
-  iconRetinaUrl: require('leaflet/dist/images/marker-icon-2x.png'),
-  iconUrl: require('leaflet/dist/images/marker-icon.png'),
-  shadowUrl: require('leaflet/dist/images/marker-shadow.png'),
+    iconRetinaUrl: require('leaflet/dist/images/marker-icon-2x.png'),
+    iconUrl: require('leaflet/dist/images/marker-icon.png'),
+    shadowUrl: require('leaflet/dist/images/marker-shadow.png'),
 });
 
 @autoinject()
 @noView()
 export class DefaultMarkerCustomElement {
     @bindable({ defaultBindingMode: bindingMode.twoWay, changeHandler: 'positionChanged' })
-    lat: number;
+    lat: number = 0;
 
     @bindable({ defaultBindingMode: bindingMode.twoWay, changeHandler: 'positionChanged' })
-    lng: number;
+    lng: number = 0;
 
     @bindable()
     model: any;
 
     @bindable()
-    options: MarkerOptions;
+    options: MarkerOptions | undefined;
 
-    @bindable()
-    click: any
-
-    marker: Marker;
-    private disposables: Disposable[];
+    marker!: Marker;
+    private disposables!: Disposable[];
 
     constructor(private element: Element, private map: LeafletMapCustomElement) {
     }
@@ -84,7 +81,7 @@ export class DefaultMarkerCustomElement {
 
     unbind() {
         this.marker.remove();
-        this.marker = null;
+        delete this.marker;
     }
 
     positionChanged() {
@@ -94,7 +91,7 @@ export class DefaultMarkerCustomElement {
     }
 
     optionsChanged() {
-        if (this.options) {
+        if (this.marker && this.marker.dragging && this.options) {
             if (this.options.draggable) {
                 this.marker.dragging.enable();
             }
