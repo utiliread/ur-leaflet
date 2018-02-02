@@ -22,6 +22,7 @@ let LeafletMapCustomElement = class LeafletMapCustomElement {
     }
     bind() {
         this.api = {
+            getMap: () => this.map,
             goto: this.goto.bind(this)
         };
     }
