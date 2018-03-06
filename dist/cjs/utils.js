@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 function listen(layer, type, handler) {
     layer.on(type, handler);
     return {
-        dispose: () => layer.off(type, handler)
+        dispose: function () { return layer.off(type, handler); }
     };
 }
 exports.listen = listen;

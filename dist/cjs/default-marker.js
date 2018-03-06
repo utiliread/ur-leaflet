@@ -10,71 +10,73 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 require("./default-marker.css");
-const aurelia_framework_1 = require("aurelia-framework");
-const leaflet_1 = require("leaflet");
-const leaflet_map_1 = require("./leaflet-map");
-const lodash_1 = require("lodash");
-const utils_1 = require("./utils");
+var aurelia_framework_1 = require("aurelia-framework");
+var leaflet_1 = require("leaflet");
+var leaflet_map_1 = require("./leaflet-map");
+var lodash_1 = require("lodash");
+var utils_1 = require("./utils");
 // https://github.com/Leaflet/Leaflet/issues/4968#issuecomment-299044745
-let defaultIconPrototype = leaflet_1.Icon.Default.prototype;
+var defaultIconPrototype = leaflet_1.Icon.Default.prototype;
 delete defaultIconPrototype._getIconUrl;
 leaflet_1.Icon.Default.mergeOptions({
     iconRetinaUrl: require('leaflet/dist/images/marker-icon-2x.png'),
     iconUrl: require('leaflet/dist/images/marker-icon.png'),
     shadowUrl: require('leaflet/dist/images/marker-shadow.png'),
 });
-let DefaultMarkerCustomElement = class DefaultMarkerCustomElement {
-    constructor(element, map) {
+var DefaultMarkerCustomElement = /** @class */ (function () {
+    function DefaultMarkerCustomElement(element, map) {
         this.element = element;
         this.map = map;
         this.lat = 0;
         this.lng = 0;
     }
-    bind() {
+    DefaultMarkerCustomElement.prototype.bind = function () {
         this.marker = leaflet_1.marker([this.lat, this.lng], this.options);
-    }
-    attached() {
+    };
+    DefaultMarkerCustomElement.prototype.attached = function () {
+        var _this = this;
         this.map.map.addLayer(this.marker);
         this.disposables = [
-            utils_1.listen(this.marker, 'click', (event) => {
-                let customEvent = aurelia_framework_1.DOM.createCustomEvent('click', {
+            utils_1.listen(this.marker, 'click', function (event) {
+                var customEvent = aurelia_framework_1.DOM.createCustomEvent('click', {
                     bubbles: true,
-                    detail: this.model
+                    detail: _this.model
                 });
                 // Leaflet requires clientX and clientY to be present when dispatching events
                 lodash_1.extend(customEvent, {
                     clientX: event.originalEvent.clientX,
                     clientY: event.originalEvent.clientY
                 });
-                this.element.dispatchEvent(customEvent);
+                _this.element.dispatchEvent(customEvent);
             }),
-            utils_1.listen(this.marker, 'drag', (event) => {
-                if (this.options && this.options.draggable) {
-                    let position = event.latlng;
-                    this.lat = position.lat;
-                    this.lng = position.lng;
+            utils_1.listen(this.marker, 'drag', function (event) {
+                if (_this.options && _this.options.draggable) {
+                    var position = event.latlng;
+                    _this.lat = position.lat;
+                    _this.lng = position.lng;
                 }
             })
         ];
-    }
-    detached() {
+    };
+    DefaultMarkerCustomElement.prototype.detached = function () {
         if (this.map && this.map.map) {
             this.map.map.removeLayer(this.marker);
         }
-        for (let disposable of this.disposables) {
+        for (var _i = 0, _a = this.disposables; _i < _a.length; _i++) {
+            var disposable = _a[_i];
             disposable.dispose();
         }
-    }
-    unbind() {
+    };
+    DefaultMarkerCustomElement.prototype.unbind = function () {
         this.marker.remove();
         delete this.marker;
-    }
-    positionChanged() {
+    };
+    DefaultMarkerCustomElement.prototype.positionChanged = function () {
         if (this.marker) {
             this.marker.setLatLng([this.lat, this.lng]);
         }
-    }
-    optionsChanged() {
+    };
+    DefaultMarkerCustomElement.prototype.optionsChanged = function () {
         if (this.marker && this.marker.dragging && this.options) {
             if (this.options.draggable) {
                 this.marker.dragging.enable();
@@ -83,28 +85,29 @@ let DefaultMarkerCustomElement = class DefaultMarkerCustomElement {
                 this.marker.dragging.disable();
             }
         }
-    }
-};
-__decorate([
-    aurelia_framework_1.bindable({ defaultBindingMode: aurelia_framework_1.bindingMode.twoWay, changeHandler: 'positionChanged' }),
-    __metadata("design:type", Number)
-], DefaultMarkerCustomElement.prototype, "lat", void 0);
-__decorate([
-    aurelia_framework_1.bindable({ defaultBindingMode: aurelia_framework_1.bindingMode.twoWay, changeHandler: 'positionChanged' }),
-    __metadata("design:type", Number)
-], DefaultMarkerCustomElement.prototype, "lng", void 0);
-__decorate([
-    aurelia_framework_1.bindable(),
-    __metadata("design:type", Object)
-], DefaultMarkerCustomElement.prototype, "model", void 0);
-__decorate([
-    aurelia_framework_1.bindable(),
-    __metadata("design:type", Object)
-], DefaultMarkerCustomElement.prototype, "options", void 0);
-DefaultMarkerCustomElement = __decorate([
-    aurelia_framework_1.autoinject(),
-    aurelia_framework_1.noView(),
-    __metadata("design:paramtypes", [Element, leaflet_map_1.LeafletMapCustomElement])
-], DefaultMarkerCustomElement);
+    };
+    __decorate([
+        aurelia_framework_1.bindable({ defaultBindingMode: aurelia_framework_1.bindingMode.twoWay, changeHandler: 'positionChanged' }),
+        __metadata("design:type", Number)
+    ], DefaultMarkerCustomElement.prototype, "lat", void 0);
+    __decorate([
+        aurelia_framework_1.bindable({ defaultBindingMode: aurelia_framework_1.bindingMode.twoWay, changeHandler: 'positionChanged' }),
+        __metadata("design:type", Number)
+    ], DefaultMarkerCustomElement.prototype, "lng", void 0);
+    __decorate([
+        aurelia_framework_1.bindable(),
+        __metadata("design:type", Object)
+    ], DefaultMarkerCustomElement.prototype, "model", void 0);
+    __decorate([
+        aurelia_framework_1.bindable(),
+        __metadata("design:type", Object)
+    ], DefaultMarkerCustomElement.prototype, "options", void 0);
+    DefaultMarkerCustomElement = __decorate([
+        aurelia_framework_1.autoinject(),
+        aurelia_framework_1.noView(),
+        __metadata("design:paramtypes", [Element, leaflet_map_1.LeafletMapCustomElement])
+    ], DefaultMarkerCustomElement);
+    return DefaultMarkerCustomElement;
+}());
 exports.DefaultMarkerCustomElement = DefaultMarkerCustomElement;
 //# sourceMappingURL=default-marker.js.map

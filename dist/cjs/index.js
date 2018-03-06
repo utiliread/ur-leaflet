@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const aurelia_framework_1 = require("aurelia-framework");
+var aurelia_framework_1 = require("aurelia-framework");
 function configure(frameworkConfiguration) {
     frameworkConfiguration.globalResources([
         aurelia_framework_1.PLATFORM.moduleName('./leaflet-map'),

@@ -12,25 +12,27 @@ Object.defineProperty(exports, "__esModule", { value: true });
 require("leaflet-area-select");
 require("leaflet-fullscreen");
 require("./leaflet-map.css");
-const aurelia_framework_1 = require("aurelia-framework");
-const leaflet_1 = require("leaflet");
-let LeafletMapCustomElement = class LeafletMapCustomElement {
-    constructor(element) {
+var aurelia_framework_1 = require("aurelia-framework");
+var leaflet_1 = require("leaflet");
+var LeafletMapCustomElement = /** @class */ (function () {
+    function LeafletMapCustomElement(element) {
         this.options = {
             fullscreenControl: true
         };
         this.bounds = undefined;
         this.element = element;
     }
-    bind() {
+    LeafletMapCustomElement.prototype.bind = function () {
+        var _this = this;
         this.api = {
-            getMap: () => this.map,
+            getMap: function () { return _this.map; },
             goto: this.goto.bind(this)
         };
-    }
-    attached() {
+    };
+    LeafletMapCustomElement.prototype.attached = function () {
+        var _this = this;
         this.map = leaflet_1.map(this.element, this.options);
-        let baseLayers = {
+        var baseLayers = {
             "Kort": leaflet_1.tileLayer('//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
             }).addTo(this.map),
@@ -42,31 +44,31 @@ let LeafletMapCustomElement = class LeafletMapCustomElement {
         if (this.bounds) {
             this.map.fitBounds(this.bounds);
         }
-        this.map.on('areaselected', event => {
-            let bounds = event.bounds;
-            let selected = this.markers.filter(x => bounds.contains(x.marker.getLatLng())).map(x => x.model);
-            let detail = {
+        this.map.on('areaselected', function (event) {
+            var bounds = event.bounds;
+            var selected = _this.markers.filter(function (x) { return bounds.contains(x.marker.getLatLng()); }).map(function (x) { return x.model; });
+            var detail = {
                 bounds: bounds,
                 selected: selected
             };
-            let areaSelectedEvent = aurelia_framework_1.DOM.createCustomEvent('area-selected', {
+            var areaSelectedEvent = aurelia_framework_1.DOM.createCustomEvent('area-selected', {
                 bubbles: true,
                 detail: detail
             });
-            this.element.dispatchEvent(areaSelectedEvent);
+            _this.element.dispatchEvent(areaSelectedEvent);
         });
-    }
-    detached() {
+    };
+    LeafletMapCustomElement.prototype.detached = function () {
         this.map.remove();
         delete this.map;
-    }
-    markersChanged() {
-        this.bounds = leaflet_1.latLngBounds(this.markers.map(x => x.marker.getLatLng()));
+    };
+    LeafletMapCustomElement.prototype.markersChanged = function () {
+        this.bounds = leaflet_1.latLngBounds(this.markers.map(function (x) { return x.marker.getLatLng(); }));
         if (this.bounds && this.map) {
             this.map.fitBounds(this.bounds);
         }
-    }
-    goto(center, zoom) {
+    };
+    LeafletMapCustomElement.prototype.goto = function (center, zoom) {
         if (zoom) {
             this.map.setView(center, zoom, {
                 animate: true,
@@ -76,24 +78,25 @@ let LeafletMapCustomElement = class LeafletMapCustomElement {
         else {
             this.map.panTo(center);
         }
-    }
-};
-__decorate([
-    aurelia_framework_1.bindable(),
-    __metadata("design:type", Object)
-], LeafletMapCustomElement.prototype, "options", void 0);
-__decorate([
-    aurelia_framework_1.bindable({ defaultBindingMode: aurelia_framework_1.bindingMode.twoWay }),
-    __metadata("design:type", Object)
-], LeafletMapCustomElement.prototype, "api", void 0);
-__decorate([
-    aurelia_framework_1.children('*'),
-    __metadata("design:type", Array)
-], LeafletMapCustomElement.prototype, "markers", void 0);
-LeafletMapCustomElement = __decorate([
-    aurelia_framework_1.autoinject(),
-    aurelia_framework_1.inlineView('<template><slot></slot></template>'),
-    __metadata("design:paramtypes", [Element])
-], LeafletMapCustomElement);
+    };
+    __decorate([
+        aurelia_framework_1.bindable(),
+        __metadata("design:type", Object)
+    ], LeafletMapCustomElement.prototype, "options", void 0);
+    __decorate([
+        aurelia_framework_1.bindable({ defaultBindingMode: aurelia_framework_1.bindingMode.twoWay }),
+        __metadata("design:type", Object)
+    ], LeafletMapCustomElement.prototype, "api", void 0);
+    __decorate([
+        aurelia_framework_1.children('*'),
+        __metadata("design:type", Array)
+    ], LeafletMapCustomElement.prototype, "markers", void 0);
+    LeafletMapCustomElement = __decorate([
+        aurelia_framework_1.autoinject(),
+        aurelia_framework_1.inlineView('<template><slot></slot></template>'),
+        __metadata("design:paramtypes", [Element])
+    ], LeafletMapCustomElement);
+    return LeafletMapCustomElement;
+}());
 exports.LeafletMapCustomElement = LeafletMapCustomElement;
 //# sourceMappingURL=leaflet-map.js.map
