@@ -54,7 +54,7 @@ export class LeafletMapCustomElement {
 
         control.layers(baseLayers).addTo(this.map);
 
-        if (this.bounds) {
+        if (this.bounds && this.bounds.isValid()) {
             this.map.fitBounds(this.bounds);
         }
 
@@ -84,7 +84,7 @@ export class LeafletMapCustomElement {
     markersChanged() {
         this.bounds = latLngBounds(this.markers.map(x => x.marker.getLatLng()).filter(x => !!x));
 
-        if (this.bounds && this.map) {
+        if (this.bounds && this.bounds.isValid() && this.map) {
             this.map.fitBounds(this.bounds);
         }
     }

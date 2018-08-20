@@ -41,7 +41,7 @@ var LeafletMapCustomElement = /** @class */ (function () {
             })
         };
         leaflet_1.control.layers(baseLayers).addTo(this.map);
-        if (this.bounds) {
+        if (this.bounds && this.bounds.isValid()) {
             this.map.fitBounds(this.bounds);
         }
         this.map.on('areaselected', function (event) {
@@ -64,7 +64,7 @@ var LeafletMapCustomElement = /** @class */ (function () {
     };
     LeafletMapCustomElement.prototype.markersChanged = function () {
         this.bounds = leaflet_1.latLngBounds(this.markers.map(function (x) { return x.marker.getLatLng(); }).filter(function (x) { return !!x; }));
-        if (this.bounds && this.map) {
+        if (this.bounds && this.bounds.isValid() && this.map) {
             this.map.fitBounds(this.bounds);
         }
     };
