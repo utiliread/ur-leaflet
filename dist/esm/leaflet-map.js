@@ -61,7 +61,7 @@ var LeafletMapCustomElement = /** @class */ (function () {
         delete this.map;
     };
     LeafletMapCustomElement.prototype.markersChanged = function () {
-        this.bounds = latLngBounds(this.markers.map(function (x) { return x.marker.getLatLng(); }));
+        this.bounds = latLngBounds(this.markers.map(function (x) { return x.marker.getLatLng(); }).filter(function (x) { return !!x; }));
         if (this.bounds && this.map) {
             this.map.fitBounds(this.bounds);
         }

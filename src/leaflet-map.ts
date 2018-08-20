@@ -82,7 +82,7 @@ export class LeafletMapCustomElement {
     }
 
     markersChanged() {
-        this.bounds = latLngBounds(this.markers.map(x => x.marker.getLatLng()));
+        this.bounds = latLngBounds(this.markers.map(x => x.marker.getLatLng()).filter(x => !!x));
 
         if (this.bounds && this.map) {
             this.map.fitBounds(this.bounds);
