@@ -37,7 +37,7 @@ export class CircleMarkerCustomElement implements IMarkerCustomElement {
 
         this.disposables = [
             listen(this.marker, 'click', (event: LeafletMouseEvent) => {
-                let customEvent = DOM.createCustomEvent('click', {
+                const customEvent = DOM.createCustomEvent('click', {
                     bubbles: true,
                     detail: this.model
                 });
@@ -45,7 +45,9 @@ export class CircleMarkerCustomElement implements IMarkerCustomElement {
                 // Leaflet requires clientX and clientY to be present when dispatching events
                 extend(customEvent, {
                     clientX: event.originalEvent.clientX,
-                    clientY: event.originalEvent.clientY
+                    clientY: event.originalEvent.clientY,
+                    ctrlKey: event.originalEvent.ctrlKey,
+                    altKey: event.originalEvent.altKey
                 });
 
                 this.element.dispatchEvent(customEvent);
@@ -60,7 +62,7 @@ export class CircleMarkerCustomElement implements IMarkerCustomElement {
             this.map.map.removeLayer(this.marker);
         }
 
-        for (let disposable of this.disposables) {
+        for (const disposable of this.disposables) {
             disposable.dispose();
         }
 

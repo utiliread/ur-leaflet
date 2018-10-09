@@ -1,5 +1,9 @@
 import { FrameworkConfiguration, PLATFORM } from 'aurelia-framework';
 
+import { AreaSelectedEvent } from './area-selected-event';
+import { LeafletApi } from './leaflet-api';
+import { MarkerClickEvent } from './marker-click-event';
+
 export function configure(frameworkConfiguration: FrameworkConfiguration) {
     frameworkConfiguration.globalResources([
         PLATFORM.moduleName('./leaflet-map'),
@@ -8,5 +12,4 @@ export function configure(frameworkConfiguration: FrameworkConfiguration) {
     ]);
 }
 
-export { AreaSelectedEvent } from './area-selected-event';
-export { LeafletApi } from './leaflet-api';
+export { MarkerClickEvent, AreaSelectedEvent, LeafletApi };

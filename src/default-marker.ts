@@ -9,7 +9,7 @@ import { extend } from 'lodash';
 import { listen } from './utils';
 
 // https://github.com/Leaflet/Leaflet/issues/4968#issuecomment-299044745
-let defaultIconPrototype: any = Icon.Default.prototype;
+const defaultIconPrototype: any = Icon.Default.prototype;
 delete defaultIconPrototype._getIconUrl;
 Icon.Default.mergeOptions({
     iconRetinaUrl: require('leaflet/dist/images/marker-icon-2x.png'),
@@ -48,7 +48,7 @@ export class DefaultMarkerCustomElement implements IMarkerCustomElement {
 
         this.disposables = [
             listen(this.marker, 'click', (event: LeafletMouseEvent) => {
-                let customEvent = DOM.createCustomEvent('click', {
+                const customEvent = DOM.createCustomEvent('click', {
                     bubbles: true,
                     detail: this.model
                 });
@@ -56,14 +56,16 @@ export class DefaultMarkerCustomElement implements IMarkerCustomElement {
                 // Leaflet requires clientX and clientY to be present when dispatching events
                 extend(customEvent, {
                     clientX: event.originalEvent.clientX,
-                    clientY: event.originalEvent.clientY
+                    clientY: event.originalEvent.clientY,
+                    ctrlKey: event.originalEvent.ctrlKey,
+                    altKey: event.originalEvent.altKey
                 });
 
                 this.element.dispatchEvent(customEvent);
             }),
             listen(this.marker, 'drag', (event: LeafletMouseEvent) => {
                 if (this.options && this.options.draggable) {
-                    let position = event.latlng;
+                    const position = event.latlng;
                     this.lat = position.lat;
                     this.lng = position.lng;
                 }
@@ -78,7 +80,7 @@ export class DefaultMarkerCustomElement implements IMarkerCustomElement {
             this.map.map.removeLayer(this.marker);
         }
 
-        for (let disposable of this.disposables) {
+        for (const disposable of this.disposables) {
             disposable.dispose();
         }
 

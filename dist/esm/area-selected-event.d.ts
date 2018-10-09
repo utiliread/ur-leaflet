@@ -1,8 +1,7 @@
 import { LatLngBounds } from 'leaflet';
-export interface AreaSelectedEvent extends CustomEvent {
-    readonly detail: AreaSelectedEventDetail;
+export interface AreaSelectedEvent<T = any> extends CustomEvent<AreaSelectedEventDetail<T>> {
 }
-export interface AreaSelectedEventDetail {
+export interface AreaSelectedEventDetail<T = any> {
     bounds: LatLngBounds;
-    selected: any[];
+    selected: T[];
 }

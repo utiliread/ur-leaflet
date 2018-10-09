@@ -35,7 +35,9 @@ var CircleMarkerCustomElement = /** @class */ (function () {
                 // Leaflet requires clientX and clientY to be present when dispatching events
                 extend(customEvent, {
                     clientX: event.originalEvent.clientX,
-                    clientY: event.originalEvent.clientY
+                    clientY: event.originalEvent.clientY,
+                    ctrlKey: event.originalEvent.ctrlKey,
+                    altKey: event.originalEvent.altKey
                 });
                 _this.element.dispatchEvent(customEvent);
             })

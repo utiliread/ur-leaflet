@@ -44,7 +44,7 @@ export class LeafletMapCustomElement {
     attached() {
         this.map = map(this.element, this.options);
 
-        let baseLayers = {
+        const baseLayers = {
             "Kort": tileLayer('//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
             }).addTo(this.map),
@@ -65,15 +65,15 @@ export class LeafletMapCustomElement {
         }
 
         this.map.on('areaselected', event => {
-            let bounds = (<any>event).bounds as LatLngBounds;
-            let selected = this.markers.filter(x => bounds.contains(x.getLatLng())).map(x => x.model);
+            const bounds = (<any>event).bounds as LatLngBounds;
+            const selected = this.markers.filter(x => bounds.contains(x.getLatLng())).map(x => x.model);
 
-            let detail: AreaSelectedEventDetail = {
+            const detail: AreaSelectedEventDetail = {
                 bounds: bounds,
                 selected: selected
             };
 
-            let areaSelectedEvent = DOM.createCustomEvent('area-selected', {
+            const areaSelectedEvent = DOM.createCustomEvent('area-selected', {
                 bubbles: true,
                 detail: detail
             });

@@ -1,4 +1,6 @@
 import { FrameworkConfiguration } from 'aurelia-framework';
+import { AreaSelectedEvent } from './area-selected-event';
+import { LeafletApi } from './leaflet-api';
+import { MarkerClickEvent } from './marker-click-event';
 export declare function configure(frameworkConfiguration: FrameworkConfiguration): void;
-export { AreaSelectedEvent } from './area-selected-event';
-export { LeafletApi } from './leaflet-api';
+export { MarkerClickEvent, AreaSelectedEvent, LeafletApi };
