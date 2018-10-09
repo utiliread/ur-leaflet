@@ -27,6 +27,7 @@ var DefaultMarkerCustomElement = /** @class */ (function () {
     function DefaultMarkerCustomElement(element, map) {
         this.element = element;
         this.map = map;
+        this.isAttached = false;
         this.lat = 0;
         this.lng = 0;
     }
@@ -57,6 +58,7 @@ var DefaultMarkerCustomElement = /** @class */ (function () {
                 }
             })
         ];
+        this.isAttached = true;
     };
     DefaultMarkerCustomElement.prototype.detached = function () {
         if (this.map && this.map.map) {
@@ -66,18 +68,19 @@ var DefaultMarkerCustomElement = /** @class */ (function () {
             var disposable = _a[_i];
             disposable.dispose();
         }
+        this.isAttached = false;
     };
     DefaultMarkerCustomElement.prototype.unbind = function () {
         this.marker.remove();
         delete this.marker;
     };
     DefaultMarkerCustomElement.prototype.positionChanged = function () {
-        if (this.marker) {
+        if (this.isAttached) {
             this.marker.setLatLng([this.lat, this.lng]);
         }
     };
     DefaultMarkerCustomElement.prototype.optionsChanged = function () {
-        if (this.marker && this.marker.dragging && this.options) {
+        if (this.isAttached && this.marker.dragging && this.options) {
             if (this.options.draggable) {
                 this.marker.dragging.enable();
             }
@@ -85,6 +88,9 @@ var DefaultMarkerCustomElement = /** @class */ (function () {
                 this.marker.dragging.disable();
             }
         }
+    };
+    DefaultMarkerCustomElement.prototype.getLatLng = function () {
+        return this.marker.getLatLng();
     };
     __decorate([
         aurelia_framework_1.bindable({ defaultBindingMode: aurelia_framework_1.bindingMode.twoWay, changeHandler: 'positionChanged' }),

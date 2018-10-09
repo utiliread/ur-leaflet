@@ -10,14 +10,13 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 import 'leaflet-area-select';
 import 'leaflet-fullscreen';
 import './leaflet-map.css';
-import { DOM, autoinject, bindable, bindingMode, children, inlineView } from 'aurelia-framework';
+import { DOM, autoinject, bindable, bindingMode, children } from 'aurelia-framework';
 import { control, latLngBounds, map, tileLayer } from 'leaflet';
 var LeafletMapCustomElement = /** @class */ (function () {
     function LeafletMapCustomElement(element) {
         this.options = {
             fullscreenControl: true
         };
-        this.bounds = undefined;
         this.element = element;
     }
     LeafletMapCustomElement.prototype.bind = function () {
@@ -39,12 +38,15 @@ var LeafletMapCustomElement = /** @class */ (function () {
             })
         };
         control.layers(baseLayers).addTo(this.map);
-        if (this.bounds && this.bounds.isValid()) {
-            this.map.fitBounds(this.bounds);
+        if (this.markers) {
+            var bounds = latLngBounds(this.markers.map(function (x) { return x.getLatLng(); }).filter(function (x) { return !!x; }));
+            if (bounds.isValid()) {
+                this.map.fitBounds(bounds);
+            }
         }
         this.map.on('areaselected', function (event) {
             var bounds = event.bounds;
-            var selected = _this.markers.filter(function (x) { return bounds.contains(x.marker.getLatLng()); }).map(function (x) { return x.model; });
+            var selected = _this.markers.filter(function (x) { return bounds.contains(x.getLatLng()); }).map(function (x) { return x.model; });
             var detail = {
                 bounds: bounds,
                 selected: selected
@@ -61,9 +63,9 @@ var LeafletMapCustomElement = /** @class */ (function () {
         delete this.map;
     };
     LeafletMapCustomElement.prototype.markersChanged = function () {
-        this.bounds = latLngBounds(this.markers.map(function (x) { return x.marker.getLatLng(); }).filter(function (x) { return !!x; }));
-        if (this.bounds && this.bounds.isValid() && this.map) {
-            this.map.fitBounds(this.bounds);
+        var bounds = latLngBounds(this.markers.map(function (x) { return x.getLatLng(); }).filter(function (x) { return !!x; }));
+        if (this.map && bounds.isValid() && !this.map.getBounds().equals(bounds)) {
+            this.map.fitBounds(bounds);
         }
     };
     LeafletMapCustomElement.prototype.goto = function (center, zoom) {
@@ -91,7 +93,6 @@ var LeafletMapCustomElement = /** @class */ (function () {
     ], LeafletMapCustomElement.prototype, "markers", void 0);
     LeafletMapCustomElement = __decorate([
         autoinject(),
-        inlineView('<template><slot></slot></template>'),
         __metadata("design:paramtypes", [Element])
     ], LeafletMapCustomElement);
     return LeafletMapCustomElement;

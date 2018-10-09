@@ -1,15 +1,18 @@
-import './circle-marker.css';
-
 import { CircleMarker, CircleMarkerOptions, Layer, LeafletEvent, LeafletMouseEvent, PathOptions, circleMarker } from 'leaflet';
 import { DOM, Disposable, autoinject, bindable, bindingMode, noView } from 'aurelia-framework';
 
+import { IMarkerCustomElement } from './marker-custom-element';
 import { LeafletMapCustomElement } from './leaflet-map';
 import { extend } from 'lodash';
 import { listen } from './utils';
 
 @autoinject()
 @noView()
-export class CircleMarkerCustomElement {
+export class CircleMarkerCustomElement implements IMarkerCustomElement {
+    private marker!: CircleMarker;
+    private disposables!: Disposable[];
+    private isAttached = false;
+    
     @bindable({ defaultBindingMode: bindingMode.twoWay, changeHandler: 'positionChanged' })
     lat: number = 0;
 
@@ -21,9 +24,6 @@ export class CircleMarkerCustomElement {
 
     @bindable()
     options: CircleMarkerOptions | undefined;
-
-    marker!: CircleMarker;
-    private disposables!: Disposable[];
 
     constructor(private element: Element, private map: LeafletMapCustomElement) {
     }
@@ -51,6 +51,8 @@ export class CircleMarkerCustomElement {
                 this.element.dispatchEvent(customEvent);
             })
         ];
+
+        this.isAttached = true;
     }
 
     detached() {
@@ -61,6 +63,8 @@ export class CircleMarkerCustomElement {
         for (let disposable of this.disposables) {
             disposable.dispose();
         }
+
+        this.isAttached = false;
     }
 
     unbind() {
@@ -69,14 +73,18 @@ export class CircleMarkerCustomElement {
     }
 
     positionChanged() {
-        if (this.marker) {
+        if (this.isAttached) {
             this.marker.setLatLng([this.lat, this.lng]);
         }
     }
 
     optionsChanged() {
-        if (this.options) {
+        if (this.isAttached && this.options) {
             this.marker.setStyle(this.options);
         }
+    }
+
+    getLatLng() {
+        return this.marker.getLatLng();
     }
 }

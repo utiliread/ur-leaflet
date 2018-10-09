@@ -7,7 +7,6 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-import './circle-marker.css';
 import { circleMarker } from 'leaflet';
 import { DOM, autoinject, bindable, bindingMode, noView } from 'aurelia-framework';
 import { LeafletMapCustomElement } from './leaflet-map';
@@ -17,6 +16,7 @@ var CircleMarkerCustomElement = /** @class */ (function () {
     function CircleMarkerCustomElement(element, map) {
         this.element = element;
         this.map = map;
+        this.isAttached = false;
         this.lat = 0;
         this.lng = 0;
     }
@@ -40,6 +40,7 @@ var CircleMarkerCustomElement = /** @class */ (function () {
                 _this.element.dispatchEvent(customEvent);
             })
         ];
+        this.isAttached = true;
     };
     CircleMarkerCustomElement.prototype.detached = function () {
         if (this.map && this.map.map) {
@@ -49,20 +50,24 @@ var CircleMarkerCustomElement = /** @class */ (function () {
             var disposable = _a[_i];
             disposable.dispose();
         }
+        this.isAttached = false;
     };
     CircleMarkerCustomElement.prototype.unbind = function () {
         this.marker.remove();
         delete this.marker;
     };
     CircleMarkerCustomElement.prototype.positionChanged = function () {
-        if (this.marker) {
+        if (this.isAttached) {
             this.marker.setLatLng([this.lat, this.lng]);
         }
     };
     CircleMarkerCustomElement.prototype.optionsChanged = function () {
-        if (this.options) {
+        if (this.isAttached && this.options) {
             this.marker.setStyle(this.options);
         }
+    };
+    CircleMarkerCustomElement.prototype.getLatLng = function () {
+        return this.marker.getLatLng();
     };
     __decorate([
         bindable({ defaultBindingMode: bindingMode.twoWay, changeHandler: 'positionChanged' }),

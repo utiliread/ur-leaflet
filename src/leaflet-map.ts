@@ -6,11 +6,11 @@ import { DOM, autoinject, bindable, bindingMode, children, inlineView } from 'au
 import { LatLngBounds, Map, MapOptions, Marker, control, latLngBounds, map, tileLayer } from 'leaflet';
 
 import { AreaSelectedEventDetail } from './area-selected-event';
+import { IMarkerCustomElement } from './marker-custom-element';
 import { LatLng } from 'leaflet';
 import { LeafletApi } from './leaflet-api';
 
 @autoinject()
-@inlineView('<template><slot></slot></template>')
 export class LeafletMapCustomElement {
     element: HTMLElement;
 
@@ -19,15 +19,13 @@ export class LeafletMapCustomElement {
         fullscreenControl: true
     };
 
-    @bindable({defaultBindingMode: bindingMode.twoWay})
+    @bindable({ defaultBindingMode: bindingMode.twoWay })
     api!: LeafletApi;
 
     @children('*')
-    markers!: {marker: Marker, model: any}[];
+    markers!: IMarkerCustomElement[];
 
-    bounds: LatLngBounds | undefined = undefined;
-
-    map!: Map;    
+    map!: Map;
 
     constructor(element: Element) {
         this.element = element as HTMLElement;
@@ -54,13 +52,17 @@ export class LeafletMapCustomElement {
 
         control.layers(baseLayers).addTo(this.map);
 
-        if (this.bounds && this.bounds.isValid()) {
-            this.map.fitBounds(this.bounds);
+        if (this.markers) {
+            const bounds = latLngBounds(this.markers.map(x => x.getLatLng()).filter(x => !!x));
+
+            if (bounds.isValid()) {
+                this.map.fitBounds(bounds);
+            }
         }
 
         this.map.on('areaselected', event => {
             let bounds = (<any>event).bounds as LatLngBounds;
-            let selected = this.markers.filter(x => bounds.contains(x.marker.getLatLng())).map(x => x.model);
+            let selected = this.markers.filter(x => bounds.contains(x.getLatLng())).map(x => x.model);
 
             let detail: AreaSelectedEventDetail = {
                 bounds: bounds,
@@ -82,10 +84,10 @@ export class LeafletMapCustomElement {
     }
 
     markersChanged() {
-        this.bounds = latLngBounds(this.markers.map(x => x.marker.getLatLng()).filter(x => !!x));
+        const bounds = latLngBounds(this.markers.map(x => x.getLatLng()).filter(x => !!x));
 
-        if (this.bounds && this.bounds.isValid() && this.map) {
-            this.map.fitBounds(this.bounds);
+        if (this.map && bounds.isValid() && !this.map.getBounds().equals(bounds)) {
+            this.map.fitBounds(bounds);
         }
     }
 

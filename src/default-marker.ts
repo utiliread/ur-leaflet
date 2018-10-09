@@ -3,6 +3,7 @@ import './default-marker.css';
 import { DOM, Disposable, autoinject, bindable, bindingMode, noView } from 'aurelia-framework';
 import { Icon, Layer, LeafletEvent, LeafletMouseEvent, Marker, MarkerOptions, PathOptions, marker } from 'leaflet';
 
+import { IMarkerCustomElement } from './marker-custom-element';
 import { LeafletMapCustomElement } from './leaflet-map';
 import { extend } from 'lodash';
 import { listen } from './utils';
@@ -18,7 +19,11 @@ Icon.Default.mergeOptions({
 
 @autoinject()
 @noView()
-export class DefaultMarkerCustomElement {
+export class DefaultMarkerCustomElement implements IMarkerCustomElement {
+    private marker!: Marker;
+    private disposables!: Disposable[];
+    private isAttached = false;
+
     @bindable({ defaultBindingMode: bindingMode.twoWay, changeHandler: 'positionChanged' })
     lat: number = 0;
 
@@ -30,9 +35,6 @@ export class DefaultMarkerCustomElement {
 
     @bindable()
     options: MarkerOptions | undefined;
-
-    marker!: Marker;
-    private disposables!: Disposable[];
 
     constructor(private element: Element, private map: LeafletMapCustomElement) {
     }
@@ -67,6 +69,8 @@ export class DefaultMarkerCustomElement {
                 }
             })
         ];
+
+        this.isAttached = true;
     }
 
     detached() {
@@ -77,6 +81,8 @@ export class DefaultMarkerCustomElement {
         for (let disposable of this.disposables) {
             disposable.dispose();
         }
+
+        this.isAttached = false;
     }
 
     unbind() {
@@ -85,13 +91,13 @@ export class DefaultMarkerCustomElement {
     }
 
     positionChanged() {
-        if (this.marker) {
+        if (this.isAttached) {
             this.marker.setLatLng([this.lat, this.lng]);
         }
     }
 
     optionsChanged() {
-        if (this.marker && this.marker.dragging && this.options) {
+        if (this.isAttached && this.marker.dragging && this.options) {
             if (this.options.draggable) {
                 this.marker.dragging.enable();
             }
@@ -99,5 +105,9 @@ export class DefaultMarkerCustomElement {
                 this.marker.dragging.disable();
             }
         }
+    }
+
+    getLatLng() {
+        return this.marker.getLatLng();
     }
 }

@@ -1,18 +1,15 @@
 import 'leaflet-area-select';
 import 'leaflet-fullscreen';
 import './leaflet-map.css';
-import { LatLngBounds, Map, MapOptions, Marker } from 'leaflet';
+import { Map, MapOptions } from 'leaflet';
+import { IMarkerCustomElement } from './marker-custom-element';
 import { LatLng } from 'leaflet';
 import { LeafletApi } from './leaflet-api';
 export declare class LeafletMapCustomElement {
     element: HTMLElement;
     options: MapOptions;
     api: LeafletApi;
-    markers: {
-        marker: Marker;
-        model: any;
-    }[];
-    bounds: LatLngBounds | undefined;
+    markers: IMarkerCustomElement[];
     map: Map;
     constructor(element: Element);
     bind(): void;
