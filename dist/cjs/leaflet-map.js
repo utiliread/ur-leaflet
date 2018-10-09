@@ -16,6 +16,8 @@ var aurelia_framework_1 = require("aurelia-framework");
 var leaflet_1 = require("leaflet");
 var LeafletMapCustomElement = /** @class */ (function () {
     function LeafletMapCustomElement(element) {
+        this.isAttached = false;
+        this.hasBounds = false;
         this.options = {
             fullscreenControl: true
         };
@@ -44,6 +46,7 @@ var LeafletMapCustomElement = /** @class */ (function () {
             var bounds = leaflet_1.latLngBounds(this.markers.map(function (x) { return x.getLatLng(); }).filter(function (x) { return !!x; }));
             if (bounds.isValid()) {
                 this.map.fitBounds(bounds);
+                this.hasBounds = true;
             }
         }
         this.map.on('areaselected', function (event) {
@@ -59,15 +62,20 @@ var LeafletMapCustomElement = /** @class */ (function () {
             });
             _this.element.dispatchEvent(areaSelectedEvent);
         });
+        this.isAttached = true;
     };
     LeafletMapCustomElement.prototype.detached = function () {
         this.map.remove();
         delete this.map;
+        this.isAttached = false;
     };
     LeafletMapCustomElement.prototype.markersChanged = function () {
-        var bounds = leaflet_1.latLngBounds(this.markers.map(function (x) { return x.getLatLng(); }).filter(function (x) { return !!x; }));
-        if (this.map && bounds.isValid() && !this.map.getBounds().equals(bounds)) {
-            this.map.fitBounds(bounds);
+        if (this.isAttached) {
+            var bounds = leaflet_1.latLngBounds(this.markers.map(function (x) { return x.getLatLng(); }).filter(function (x) { return !!x; }));
+            if (bounds.isValid() && (!this.hasBounds || !this.map.getBounds().equals(bounds))) {
+                this.map.fitBounds(bounds);
+                this.hasBounds = true;
+            }
         }
     };
     LeafletMapCustomElement.prototype.goto = function (center, zoom) {

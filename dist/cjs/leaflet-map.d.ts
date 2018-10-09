@@ -6,6 +6,8 @@ import { IMarkerCustomElement } from './marker-custom-element';
 import { LatLng } from 'leaflet';
 import { LeafletApi } from './leaflet-api';
 export declare class LeafletMapCustomElement {
+    private isAttached;
+    private hasBounds;
     element: HTMLElement;
     options: MapOptions;
     api: LeafletApi;

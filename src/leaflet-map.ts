@@ -12,6 +12,9 @@ import { LeafletApi } from './leaflet-api';
 
 @autoinject()
 export class LeafletMapCustomElement {
+    private isAttached = false;
+    private hasBounds = false;
+
     element: HTMLElement;
 
     @bindable()
@@ -57,6 +60,7 @@ export class LeafletMapCustomElement {
 
             if (bounds.isValid()) {
                 this.map.fitBounds(bounds);
+                this.hasBounds = true;
             }
         }
 
@@ -76,18 +80,24 @@ export class LeafletMapCustomElement {
 
             this.element.dispatchEvent(areaSelectedEvent);
         });
+
+        this.isAttached = true;
     }
 
     detached() {
         this.map.remove();
         delete this.map;
+        this.isAttached = false;
     }
 
     markersChanged() {
-        const bounds = latLngBounds(this.markers.map(x => x.getLatLng()).filter(x => !!x));
+        if (this.isAttached) {
+            const bounds = latLngBounds(this.markers.map(x => x.getLatLng()).filter(x => !!x));
 
-        if (this.map && bounds.isValid() && !this.map.getBounds().equals(bounds)) {
-            this.map.fitBounds(bounds);
+            if (bounds.isValid() && (!this.hasBounds || !this.map.getBounds().equals(bounds))) {
+                this.map.fitBounds(bounds);
+                this.hasBounds = true;
+            }
         }
     }
 
