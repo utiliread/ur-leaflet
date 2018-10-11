@@ -11,6 +11,8 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 require("leaflet-area-select");
 require("leaflet-fullscreen");
+require("leaflet/dist/leaflet.css");
+require("leaflet-fullscreen/dist/leaflet.fullscreen.css");
 require("./leaflet-map.css");
 var aurelia_framework_1 = require("aurelia-framework");
 var leaflet_1 = require("leaflet");

@@ -1,5 +1,7 @@
 import 'leaflet-area-select';
 import 'leaflet-fullscreen';
+import 'leaflet/dist/leaflet.css';
+import 'leaflet-fullscreen/dist/leaflet.fullscreen.css'
 import './leaflet-map.css';
 
 import { DOM, autoinject, bindable, bindingMode, children, inlineView } from 'aurelia-framework';

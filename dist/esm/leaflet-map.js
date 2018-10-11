@@ -9,6 +9,8 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 import 'leaflet-area-select';
 import 'leaflet-fullscreen';
+import 'leaflet/dist/leaflet.css';
+import 'leaflet-fullscreen/dist/leaflet.fullscreen.css';
 import './leaflet-map.css';
 import { DOM, autoinject, bindable, bindingMode, children } from 'aurelia-framework';
 import { control, latLngBounds, map, tileLayer } from 'leaflet';
