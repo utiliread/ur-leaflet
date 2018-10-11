@@ -71,7 +71,7 @@ export class CircleMarkerCustomElement implements IMarkerCustomElement {
     }
 
     detached() {
-        if (this.map && this.isAdded) {
+        if (this.map && this.map.map && this.isAdded) {
             this.map.map.removeLayer(this.marker);
         }
 
