@@ -56,7 +56,7 @@ var CircleMarkerCustomElement = /** @class */ (function () {
         this.isAttached = true;
     };
     CircleMarkerCustomElement.prototype.detached = function () {
-        if (this.map && this.isAdded) {
+        if (this.map && this.map.map && this.isAdded) {
             this.map.map.removeLayer(this.marker);
         }
         for (var _i = 0, _a = this.disposables; _i < _a.length; _i++) {
