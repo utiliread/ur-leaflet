@@ -12,6 +12,7 @@ export class CircleMarkerCustomElement implements IMarkerCustomElement {
     private marker!: CircleMarker;
     private disposables!: Disposable[];
     private isAttached = false;
+    private isAdded = false;
     
     @bindable({ defaultBindingMode: bindingMode.twoWay, changeHandler: 'positionChanged' })
     lat: number = 0;
@@ -25,6 +26,9 @@ export class CircleMarkerCustomElement implements IMarkerCustomElement {
     @bindable()
     options: CircleMarkerOptions | undefined;
 
+    @bindable()
+    delay: number | string | undefined = undefined;
+
     constructor(private element: Element, private map: LeafletMapCustomElement) {
     }
 
@@ -33,8 +37,6 @@ export class CircleMarkerCustomElement implements IMarkerCustomElement {
     }
 
     attached() {
-        this.map.map.addLayer(this.marker);
-
         this.disposables = [
             listen(this.marker, 'click', (event: LeafletMouseEvent) => {
                 const customEvent = DOM.createCustomEvent('click', {
@@ -54,11 +56,22 @@ export class CircleMarkerCustomElement implements IMarkerCustomElement {
             })
         ];
 
+        if (this.delay !== undefined) {
+            this.disposables.push(createTimeout(() => {
+                this.map.map.addLayer(this.marker);
+                this.isAdded = true;
+            }, Number(this.delay)));
+        }
+        else {
+            this.map.map.addLayer(this.marker);
+            this.isAdded = true;
+        }
+
         this.isAttached = true;
     }
 
     detached() {
-        if (this.map && this.map.map) {
+        if (this.map && this.isAdded) {
             this.map.map.removeLayer(this.marker);
         }
 
@@ -89,4 +102,12 @@ export class CircleMarkerCustomElement implements IMarkerCustomElement {
     getLatLng() {
         return this.marker.getLatLng();
     }
+}
+
+function createTimeout(handler: Function, timeout: number) : Disposable {
+    const handle = setTimeout(handler, timeout);
+
+    return {
+        dispose: () => clearTimeout(handle)
+    };
 }

@@ -7,10 +7,12 @@ export declare class CircleMarkerCustomElement implements IMarkerCustomElement {
     private marker;
     private disposables;
     private isAttached;
+    private isAdded;
     lat: number;
     lng: number;
     model: any;
     options: CircleMarkerOptions | undefined;
+    delay: number | string | undefined;
     constructor(element: Element, map: LeafletMapCustomElement);
     bind(): void;
     attached(): void;

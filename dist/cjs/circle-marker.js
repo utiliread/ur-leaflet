@@ -19,15 +19,16 @@ var CircleMarkerCustomElement = /** @class */ (function () {
         this.element = element;
         this.map = map;
         this.isAttached = false;
+        this.isAdded = false;
         this.lat = 0;
         this.lng = 0;
+        this.delay = undefined;
     }
     CircleMarkerCustomElement.prototype.bind = function () {
         this.marker = leaflet_1.circleMarker([this.lat, this.lng], this.options);
     };
     CircleMarkerCustomElement.prototype.attached = function () {
         var _this = this;
-        this.map.map.addLayer(this.marker);
         this.disposables = [
             utils_1.listen(this.marker, 'click', function (event) {
                 var customEvent = aurelia_framework_1.DOM.createCustomEvent('click', {
@@ -44,10 +45,20 @@ var CircleMarkerCustomElement = /** @class */ (function () {
                 _this.element.dispatchEvent(customEvent);
             })
         ];
+        if (this.delay !== undefined) {
+            this.disposables.push(createTimeout(function () {
+                _this.map.map.addLayer(_this.marker);
+                _this.isAdded = true;
+            }, Number(this.delay)));
+        }
+        else {
+            this.map.map.addLayer(this.marker);
+            this.isAdded = true;
+        }
         this.isAttached = true;
     };
     CircleMarkerCustomElement.prototype.detached = function () {
-        if (this.map && this.map.map) {
+        if (this.map && this.isAdded) {
             this.map.map.removeLayer(this.marker);
         }
         for (var _i = 0, _a = this.disposables; _i < _a.length; _i++) {
@@ -89,6 +100,10 @@ var CircleMarkerCustomElement = /** @class */ (function () {
         aurelia_framework_1.bindable(),
         __metadata("design:type", Object)
     ], CircleMarkerCustomElement.prototype, "options", void 0);
+    __decorate([
+        aurelia_framework_1.bindable(),
+        __metadata("design:type", Object)
+    ], CircleMarkerCustomElement.prototype, "delay", void 0);
     CircleMarkerCustomElement = __decorate([
         aurelia_framework_1.autoinject(),
         aurelia_framework_1.noView(),
@@ -97,4 +112,10 @@ var CircleMarkerCustomElement = /** @class */ (function () {
     return CircleMarkerCustomElement;
 }());
 exports.CircleMarkerCustomElement = CircleMarkerCustomElement;
+function createTimeout(handler, timeout) {
+    var handle = setTimeout(handler, timeout);
+    return {
+        dispose: function () { return clearTimeout(handle); }
+    };
+}
 //# sourceMappingURL=circle-marker.js.map
