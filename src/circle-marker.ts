@@ -1,9 +1,9 @@
-import { CircleMarker, CircleMarkerOptions, Layer, LeafletEvent, LeafletMouseEvent, PathOptions, circleMarker } from 'leaflet';
+import { CircleMarker, CircleMarkerOptions, LeafletMouseEvent, circleMarker } from 'leaflet';
 import { DOM, Disposable, autoinject, bindable, bindingMode, noView } from 'aurelia-framework';
 
 import { IMarkerCustomElement } from './marker-custom-element';
 import { LeafletMapCustomElement } from './leaflet-map';
-import { extend } from 'lodash';
+import { extend } from 'lodash-es';
 import { listen } from './utils';
 
 @autoinject()

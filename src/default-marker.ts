@@ -1,11 +1,11 @@
 import './default-marker.css';
 
 import { DOM, Disposable, autoinject, bindable, bindingMode, noView } from 'aurelia-framework';
-import { Icon, Layer, LeafletEvent, LeafletMouseEvent, Marker, MarkerOptions, PathOptions, marker } from 'leaflet';
+import { Icon, LeafletMouseEvent, Marker, MarkerOptions, marker } from 'leaflet';
 
 import { IMarkerCustomElement } from './marker-custom-element';
 import { LeafletMapCustomElement } from './leaflet-map';
-import { extend } from 'lodash';
+import { extend } from 'lodash-es';
 import { listen } from './utils';
 
 // https://github.com/Leaflet/Leaflet/issues/4968#issuecomment-299044745

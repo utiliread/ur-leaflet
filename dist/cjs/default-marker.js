@@ -13,7 +13,7 @@ require("./default-marker.css");
 var aurelia_framework_1 = require("aurelia-framework");
 var leaflet_1 = require("leaflet");
 var leaflet_map_1 = require("./leaflet-map");
-var lodash_1 = require("lodash");
+var lodash_es_1 = require("lodash-es");
 var utils_1 = require("./utils");
 // https://github.com/Leaflet/Leaflet/issues/4968#issuecomment-299044745
 var defaultIconPrototype = leaflet_1.Icon.Default.prototype;
@@ -44,7 +44,7 @@ var DefaultMarkerCustomElement = /** @class */ (function () {
                     detail: _this.model
                 });
                 // Leaflet requires clientX and clientY to be present when dispatching events
-                lodash_1.extend(customEvent, {
+                lodash_es_1.extend(customEvent, {
                     clientX: event.originalEvent.clientX,
                     clientY: event.originalEvent.clientY,
                     ctrlKey: event.originalEvent.ctrlKey,

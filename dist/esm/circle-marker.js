@@ -10,7 +10,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 import { circleMarker } from 'leaflet';
 import { DOM, autoinject, bindable, bindingMode, noView } from 'aurelia-framework';
 import { LeafletMapCustomElement } from './leaflet-map';
-import { extend } from 'lodash';
+import { extend } from 'lodash-es';
 import { listen } from './utils';
 var CircleMarkerCustomElement = /** @class */ (function () {
     function CircleMarkerCustomElement(element, map) {

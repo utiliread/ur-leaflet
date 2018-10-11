@@ -11,7 +11,7 @@ import './default-marker.css';
 import { DOM, autoinject, bindable, bindingMode, noView } from 'aurelia-framework';
 import { Icon, marker } from 'leaflet';
 import { LeafletMapCustomElement } from './leaflet-map';
-import { extend } from 'lodash';
+import { extend } from 'lodash-es';
 import { listen } from './utils';
 // https://github.com/Leaflet/Leaflet/issues/4968#issuecomment-299044745
 var defaultIconPrototype = Icon.Default.prototype;
