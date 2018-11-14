@@ -37,6 +37,9 @@ export class LeafletMapCustomElement {
     }
 
     bind() {
+        // Create map here so that components that use the api can get the map in their attached() lifecycle hook
+        this.map = map(this.element, this.options);
+
         this.api = {
             getMap: () => this.map,
             goto: this.goto.bind(this)
@@ -44,8 +47,6 @@ export class LeafletMapCustomElement {
     }
 
     attached() {
-        this.map = map(this.element, this.options);
-
         const baseLayers = {
             "Kort": tileLayer('//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
