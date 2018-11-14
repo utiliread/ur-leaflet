@@ -27,6 +27,8 @@ var LeafletMapCustomElement = /** @class */ (function () {
     }
     LeafletMapCustomElement.prototype.bind = function () {
         var _this = this;
+        // Create map here so that components that use the api can get the map in their attached() lifecycle hook
+        this.map = leaflet_1.map(this.element, this.options);
         this.api = {
             getMap: function () { return _this.map; },
             goto: this.goto.bind(this)
@@ -34,7 +36,6 @@ var LeafletMapCustomElement = /** @class */ (function () {
     };
     LeafletMapCustomElement.prototype.attached = function () {
         var _this = this;
-        this.map = leaflet_1.map(this.element, this.options);
         var baseLayers = {
             "Kort": leaflet_1.tileLayer('//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
