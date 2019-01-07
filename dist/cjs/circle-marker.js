@@ -22,7 +22,6 @@ var CircleMarkerCustomElement = /** @class */ (function () {
         this.isAdded = false;
         this.lat = 0;
         this.lng = 0;
-        this.delay = undefined;
     }
     CircleMarkerCustomElement.prototype.bind = function () {
         this.marker = leaflet_1.circleMarker([this.lat, this.lng], this.options);
@@ -81,15 +80,25 @@ var CircleMarkerCustomElement = /** @class */ (function () {
             this.marker.setStyle(this.options);
         }
     };
+    CircleMarkerCustomElement.prototype.popupChanged = function () {
+        if (this.isAttached) {
+            if (this.popup) {
+                this.marker.bindPopup(this.popup, this.popupOptions);
+            }
+            else {
+                this.marker.unbindPopup();
+            }
+        }
+    };
     CircleMarkerCustomElement.prototype.getLatLng = function () {
         return this.marker.getLatLng();
     };
     __decorate([
-        aurelia_framework_1.bindable({ defaultBindingMode: aurelia_framework_1.bindingMode.twoWay, changeHandler: 'positionChanged' }),
+        aurelia_framework_1.bindable({ defaultBindingMode: aurelia_framework_1.bindingMode.twoWay, changeHandler: "positionChanged" }),
         __metadata("design:type", Number)
     ], CircleMarkerCustomElement.prototype, "lat", void 0);
     __decorate([
-        aurelia_framework_1.bindable({ defaultBindingMode: aurelia_framework_1.bindingMode.twoWay, changeHandler: 'positionChanged' }),
+        aurelia_framework_1.bindable({ defaultBindingMode: aurelia_framework_1.bindingMode.twoWay, changeHandler: "positionChanged" }),
         __metadata("design:type", Number)
     ], CircleMarkerCustomElement.prototype, "lng", void 0);
     __decorate([
@@ -104,6 +113,14 @@ var CircleMarkerCustomElement = /** @class */ (function () {
         aurelia_framework_1.bindable(),
         __metadata("design:type", Object)
     ], CircleMarkerCustomElement.prototype, "delay", void 0);
+    __decorate([
+        aurelia_framework_1.bindable(),
+        __metadata("design:type", String)
+    ], CircleMarkerCustomElement.prototype, "popup", void 0);
+    __decorate([
+        aurelia_framework_1.bindable({ changeHandler: "popupChanged" }),
+        __metadata("design:type", Object)
+    ], CircleMarkerCustomElement.prototype, "popupOptions", void 0);
     CircleMarkerCustomElement = __decorate([
         aurelia_framework_1.autoinject(),
         aurelia_framework_1.noView(),

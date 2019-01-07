@@ -1,4 +1,4 @@
-import { CircleMarkerOptions } from 'leaflet';
+import { CircleMarkerOptions, PopupOptions } from 'leaflet';
 import { IMarkerCustomElement } from './marker-custom-element';
 import { LeafletMapCustomElement } from './leaflet-map';
 export declare class CircleMarkerCustomElement implements IMarkerCustomElement {
@@ -11,8 +11,10 @@ export declare class CircleMarkerCustomElement implements IMarkerCustomElement {
     lat: number;
     lng: number;
     model: any;
-    options: CircleMarkerOptions | undefined;
-    delay: number | string | undefined;
+    options?: CircleMarkerOptions;
+    delay?: number | string;
+    popup?: string;
+    popupOptions?: PopupOptions;
     constructor(element: Element, map: LeafletMapCustomElement);
     bind(): void;
     attached(): void;
@@ -20,5 +22,6 @@ export declare class CircleMarkerCustomElement implements IMarkerCustomElement {
     unbind(): void;
     positionChanged(): void;
     optionsChanged(): void;
+    popupChanged(): void;
     getLatLng(): import("leaflet").LatLng;
 }

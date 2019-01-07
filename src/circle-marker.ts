@@ -1,4 +1,4 @@
-import { CircleMarker, CircleMarkerOptions, LeafletMouseEvent, circleMarker } from 'leaflet';
+import { CircleMarker, CircleMarkerOptions, LeafletMouseEvent, circleMarker, PopupOptions } from 'leaflet';
 import { DOM, Disposable, autoinject, bindable, bindingMode, noView } from 'aurelia-framework';
 
 import { IMarkerCustomElement } from './marker-custom-element';
@@ -13,21 +13,27 @@ export class CircleMarkerCustomElement implements IMarkerCustomElement {
     private disposables!: Disposable[];
     private isAttached = false;
     private isAdded = false;
-    
-    @bindable({ defaultBindingMode: bindingMode.twoWay, changeHandler: 'positionChanged' })
+
+    @bindable({ defaultBindingMode: bindingMode.twoWay, changeHandler: "positionChanged" })
     lat: number = 0;
 
-    @bindable({ defaultBindingMode: bindingMode.twoWay, changeHandler: 'positionChanged' })
+    @bindable({ defaultBindingMode: bindingMode.twoWay, changeHandler: "positionChanged" })
     lng: number = 0;
 
     @bindable()
     model: any;
 
     @bindable()
-    options: CircleMarkerOptions | undefined;
+    options?: CircleMarkerOptions;
 
     @bindable()
-    delay: number | string | undefined = undefined;
+    delay?: number | string;
+
+    @bindable()
+    popup?: string;
+
+    @bindable({ changeHandler: "popupChanged" })
+    popupOptions?: PopupOptions;
 
     constructor(private element: Element, private map: LeafletMapCustomElement) {
     }
@@ -99,12 +105,23 @@ export class CircleMarkerCustomElement implements IMarkerCustomElement {
         }
     }
 
+    popupChanged() {
+        if (this.isAttached) {
+            if (this.popup) {
+                this.marker.bindPopup(this.popup, this.popupOptions);
+            }
+            else {
+                this.marker.unbindPopup();
+            }
+        }
+    }
+
     getLatLng() {
         return this.marker.getLatLng();
     }
 }
 
-function createTimeout(handler: Function, timeout: number) : Disposable {
+function createTimeout(handler: Function, timeout: number): Disposable {
     const handle = setTimeout(handler, timeout);
 
     return {

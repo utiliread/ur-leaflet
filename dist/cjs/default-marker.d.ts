@@ -11,7 +11,7 @@ export declare class DefaultMarkerCustomElement implements IMarkerCustomElement 
     lat: number;
     lng: number;
     model: any;
-    options: MarkerOptions | undefined;
+    options?: MarkerOptions;
     constructor(element: Element, map: LeafletMapCustomElement);
     bind(): void;
     attached(): void;

@@ -93,11 +93,11 @@ var DefaultMarkerCustomElement = /** @class */ (function () {
         return this.marker.getLatLng();
     };
     __decorate([
-        bindable({ defaultBindingMode: bindingMode.twoWay, changeHandler: 'positionChanged' }),
+        bindable({ defaultBindingMode: bindingMode.twoWay, changeHandler: "positionChanged" }),
         __metadata("design:type", Number)
     ], DefaultMarkerCustomElement.prototype, "lat", void 0);
     __decorate([
-        bindable({ defaultBindingMode: bindingMode.twoWay, changeHandler: 'positionChanged' }),
+        bindable({ defaultBindingMode: bindingMode.twoWay, changeHandler: "positionChanged" }),
         __metadata("design:type", Number)
     ], DefaultMarkerCustomElement.prototype, "lng", void 0);
     __decorate([

@@ -24,17 +24,17 @@ export class DefaultMarkerCustomElement implements IMarkerCustomElement {
     private disposables!: Disposable[];
     private isAttached = false;
 
-    @bindable({ defaultBindingMode: bindingMode.twoWay, changeHandler: 'positionChanged' })
+    @bindable({ defaultBindingMode: bindingMode.twoWay, changeHandler: "positionChanged" })
     lat: number = 0;
 
-    @bindable({ defaultBindingMode: bindingMode.twoWay, changeHandler: 'positionChanged' })
+    @bindable({ defaultBindingMode: bindingMode.twoWay, changeHandler: "positionChanged" })
     lng: number = 0;
 
     @bindable()
     model: any;
 
     @bindable()
-    options: MarkerOptions | undefined;
+    options?: MarkerOptions;
 
     constructor(private element: Element, private map: LeafletMapCustomElement) {
     }
