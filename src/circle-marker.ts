@@ -32,7 +32,7 @@ export class CircleMarkerCustomElement implements IMarkerCustomElement {
     @bindable()
     popup?: string;
 
-    @bindable({ changeHandler: "popupChanged" })
+    @bindable()
     popupOptions?: PopupOptions;
 
     constructor(private element: Element, private map: LeafletMapCustomElement) {

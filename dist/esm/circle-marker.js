@@ -109,7 +109,7 @@ var CircleMarkerCustomElement = /** @class */ (function () {
         __metadata("design:type", String)
     ], CircleMarkerCustomElement.prototype, "popup", void 0);
     __decorate([
-        bindable({ changeHandler: "popupChanged" }),
+        bindable(),
         __metadata("design:type", Object)
     ], CircleMarkerCustomElement.prototype, "popupOptions", void 0);
     CircleMarkerCustomElement = __decorate([

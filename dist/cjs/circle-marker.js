@@ -111,7 +111,7 @@ var CircleMarkerCustomElement = /** @class */ (function () {
         __metadata("design:type", String)
     ], CircleMarkerCustomElement.prototype, "popup", void 0);
     __decorate([
-        aurelia_framework_1.bindable({ changeHandler: "popupChanged" }),
+        aurelia_framework_1.bindable(),
         __metadata("design:type", Object)
     ], CircleMarkerCustomElement.prototype, "popupOptions", void 0);
     CircleMarkerCustomElement = __decorate([
