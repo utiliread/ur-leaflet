@@ -23,9 +23,6 @@ var CircleMarkerCustomElement = /** @class */ (function () {
     }
     CircleMarkerCustomElement.prototype.bind = function () {
         this.marker = circleMarker([this.lat, this.lng], this.options);
-        if (this.popup) {
-            this.marker.bindPopup(this.popup, this.popupOptions);
-        }
     };
     CircleMarkerCustomElement.prototype.attached = function () {
         var _this = this;
@@ -43,6 +40,9 @@ var CircleMarkerCustomElement = /** @class */ (function () {
                     altKey: event.originalEvent.altKey
                 });
                 _this.element.dispatchEvent(customEvent);
+                if (_this.popup) {
+                    _this.map.map.openPopup(_this.popup, _this.marker.getLatLng(), _this.popupOptions);
+                }
             })
         ];
         if (this.delay !== undefined) {
@@ -79,16 +79,6 @@ var CircleMarkerCustomElement = /** @class */ (function () {
     CircleMarkerCustomElement.prototype.optionsChanged = function () {
         if (this.isAttached && this.options) {
             this.marker.setStyle(this.options);
-        }
-    };
-    CircleMarkerCustomElement.prototype.popupChanged = function () {
-        if (this.isAttached) {
-            if (this.popup) {
-                this.marker.bindPopup(this.popup, this.popupOptions);
-            }
-            else {
-                this.marker.unbindPopup();
-            }
         }
     };
     CircleMarkerCustomElement.prototype.getLatLng = function () {

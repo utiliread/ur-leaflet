@@ -40,10 +40,6 @@ export class CircleMarkerCustomElement implements IMarkerCustomElement {
 
     bind() {
         this.marker = circleMarker([this.lat, this.lng], this.options);
-
-        if (this.popup) {
-            this.marker.bindPopup(this.popup, this.popupOptions);
-        }
     }
 
     attached() {
@@ -63,6 +59,10 @@ export class CircleMarkerCustomElement implements IMarkerCustomElement {
                 });
 
                 this.element.dispatchEvent(customEvent);
+
+                if (this.popup) {
+                    this.map.map.openPopup(this.popup, this.marker.getLatLng(), this.popupOptions);
+                }
             })
         ];
 
@@ -106,17 +106,6 @@ export class CircleMarkerCustomElement implements IMarkerCustomElement {
     optionsChanged() {
         if (this.isAttached && this.options) {
             this.marker.setStyle(this.options);
-        }
-    }
-
-    popupChanged() {
-        if (this.isAttached) {
-            if (this.popup) {
-                this.marker.bindPopup(this.popup, this.popupOptions);
-            }
-            else {
-                this.marker.unbindPopup();
-            }
         }
     }
 

@@ -22,6 +22,5 @@ export declare class CircleMarkerCustomElement implements IMarkerCustomElement {
     unbind(): void;
     positionChanged(): void;
     optionsChanged(): void;
-    popupChanged(): void;
     getLatLng(): import("leaflet").LatLng;
 }
