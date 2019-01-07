@@ -25,6 +25,9 @@ var CircleMarkerCustomElement = /** @class */ (function () {
     }
     CircleMarkerCustomElement.prototype.bind = function () {
         this.marker = leaflet_1.circleMarker([this.lat, this.lng], this.options);
+        if (this.popup) {
+            this.marker.bindPopup(this.popup, this.popupOptions);
+        }
     };
     CircleMarkerCustomElement.prototype.attached = function () {
         var _this = this;

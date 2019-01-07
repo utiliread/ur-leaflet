@@ -40,6 +40,10 @@ export class CircleMarkerCustomElement implements IMarkerCustomElement {
 
     bind() {
         this.marker = circleMarker([this.lat, this.lng], this.options);
+
+        if (this.popup) {
+            this.marker.bindPopup(this.popup, this.popupOptions);
+        }
     }
 
     attached() {
