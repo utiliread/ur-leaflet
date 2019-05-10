@@ -21,6 +21,7 @@ var LeafletMapCustomElement = /** @class */ (function () {
         this.options = {
             fullscreenControl: true
         };
+        this.fitBounds = true;
         this.element = element;
     }
     LeafletMapCustomElement.prototype.bind = function () {
@@ -44,10 +45,12 @@ var LeafletMapCustomElement = /** @class */ (function () {
         };
         control.layers(baseLayers).addTo(this.map);
         if (this.markers) {
-            var bounds = latLngBounds(this.markers.map(function (x) { return x.getLatLng(); }).filter(function (x) { return !!x; }));
-            if (bounds.isValid()) {
-                this.map.fitBounds(bounds);
-                this.hasBounds = true;
+            if (this.fitBounds.toString() === "true") {
+                var bounds = latLngBounds(this.markers.map(function (x) { return x.getLatLng(); }).filter(function (x) { return !!x; }));
+                if (bounds.isValid()) {
+                    this.map.fitBounds(bounds);
+                    this.hasBounds = true;
+                }
             }
         }
         this.map.on('areaselected', function (event) {
@@ -72,10 +75,12 @@ var LeafletMapCustomElement = /** @class */ (function () {
     };
     LeafletMapCustomElement.prototype.markersChanged = function () {
         if (this.isAttached) {
-            var bounds = latLngBounds(this.markers.map(function (x) { return x.getLatLng(); }).filter(function (x) { return !!x; }));
-            if (bounds.isValid() && (!this.hasBounds || !this.map.getBounds().equals(bounds))) {
-                this.map.fitBounds(bounds);
-                this.hasBounds = true;
+            if (this.fitBounds.toString() === "true") {
+                var bounds = latLngBounds(this.markers.map(function (x) { return x.getLatLng(); }).filter(function (x) { return !!x; }));
+                if (bounds.isValid() && (!this.hasBounds || !this.map.getBounds().equals(bounds))) {
+                    this.map.fitBounds(bounds);
+                    this.hasBounds = true;
+                }
             }
         }
     };
@@ -98,6 +103,10 @@ var LeafletMapCustomElement = /** @class */ (function () {
         bindable({ defaultBindingMode: bindingMode.twoWay }),
         __metadata("design:type", Object)
     ], LeafletMapCustomElement.prototype, "api", void 0);
+    __decorate([
+        bindable(),
+        __metadata("design:type", Object)
+    ], LeafletMapCustomElement.prototype, "fitBounds", void 0);
     __decorate([
         children('*'),
         __metadata("design:type", Array)

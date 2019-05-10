@@ -13,6 +13,7 @@ export declare class LeafletMapCustomElement {
     element: HTMLElement;
     options: MapOptions;
     api: LeafletApi;
+    fitBounds: boolean | "true" | "false";
     markers: IMarkerCustomElement[];
     map: Map;
     constructor(element: Element);

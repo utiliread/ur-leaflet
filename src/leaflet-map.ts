@@ -27,6 +27,9 @@ export class LeafletMapCustomElement {
     @bindable({ defaultBindingMode: bindingMode.twoWay })
     api!: LeafletApi;
 
+    @bindable()
+    fitBounds: boolean | "true" | "false" = true;
+
     @children('*')
     markers!: IMarkerCustomElement[];
 
@@ -59,11 +62,13 @@ export class LeafletMapCustomElement {
         control.layers(baseLayers).addTo(this.map);
 
         if (this.markers) {
-            const bounds = latLngBounds(this.markers.map(x => x.getLatLng()).filter(x => !!x));
+            if (this.fitBounds.toString() === "true") {
+                const bounds = latLngBounds(this.markers.map(x => x.getLatLng()).filter(x => !!x));
 
-            if (bounds.isValid()) {
-                this.map.fitBounds(bounds);
-                this.hasBounds = true;
+                if (bounds.isValid()) {
+                    this.map.fitBounds(bounds);
+                    this.hasBounds = true;
+                }
             }
         }
 
@@ -95,11 +100,13 @@ export class LeafletMapCustomElement {
 
     markersChanged() {
         if (this.isAttached) {
-            const bounds = latLngBounds(this.markers.map(x => x.getLatLng()).filter(x => !!x));
+            if (this.fitBounds.toString() === "true") {
+                const bounds = latLngBounds(this.markers.map(x => x.getLatLng()).filter(x => !!x));
 
-            if (bounds.isValid() && (!this.hasBounds || !this.map.getBounds().equals(bounds))) {
-                this.map.fitBounds(bounds);
-                this.hasBounds = true;
+                if (bounds.isValid() && (!this.hasBounds || !this.map.getBounds().equals(bounds))) {
+                    this.map.fitBounds(bounds);
+                    this.hasBounds = true;
+                }
             }
         }
     }
