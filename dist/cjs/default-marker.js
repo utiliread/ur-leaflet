@@ -20,10 +20,13 @@ var utils_1 = require("./utils");
 // https://github.com/Leaflet/Leaflet/issues/4968#issuecomment-299044745
 var defaultIconPrototype = leaflet_1.Icon.Default.prototype;
 delete defaultIconPrototype._getIconUrl;
+var iconRetinaUrl = require('leaflet/dist/images/marker-icon-2x.png');
+var iconUrl = require('leaflet/dist/images/marker-icon.png');
+var shadowUrl = require('leaflet/dist/images/marker-shadow.png');
 leaflet_1.Icon.Default.mergeOptions({
-    iconRetinaUrl: (_a = require('leaflet/dist/images/marker-icon-2x.png')) === null || _a === void 0 ? void 0 : _a.default,
-    iconUrl: (_b = require('leaflet/dist/images/marker-icon.png')) === null || _b === void 0 ? void 0 : _b.default,
-    shadowUrl: (_c = require('leaflet/dist/images/marker-shadow.png')) === null || _c === void 0 ? void 0 : _c.default,
+    iconRetinaUrl: (_a = iconRetinaUrl.default) !== null && _a !== void 0 ? _a : iconRetinaUrl,
+    iconUrl: (_b = iconUrl.default) !== null && _b !== void 0 ? _b : iconUrl,
+    shadowUrl: (_c = shadowUrl.default) !== null && _c !== void 0 ? _c : shadowUrl,
 });
 var DefaultMarkerCustomElement = /** @class */ (function () {
     function DefaultMarkerCustomElement(element, map) {
