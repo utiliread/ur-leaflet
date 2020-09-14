@@ -11,10 +11,13 @@ import { listen } from './utils';
 // https://github.com/Leaflet/Leaflet/issues/4968#issuecomment-299044745
 const defaultIconPrototype: any = Icon.Default.prototype;
 delete defaultIconPrototype._getIconUrl;
+const iconRetinaUrl = require('leaflet/dist/images/marker-icon-2x.png');
+const iconUrl = require('leaflet/dist/images/marker-icon.png');
+const shadowUrl = require('leaflet/dist/images/marker-shadow.png');
 Icon.Default.mergeOptions({
-    iconRetinaUrl: require('leaflet/dist/images/marker-icon-2x.png')?.default,
-    iconUrl: require('leaflet/dist/images/marker-icon.png')?.default,
-    shadowUrl: require('leaflet/dist/images/marker-shadow.png')?.default,
+    iconRetinaUrl: iconRetinaUrl.default ?? iconRetinaUrl,
+    iconUrl: iconUrl.default ?? iconUrl,
+    shadowUrl: shadowUrl.default ?? shadowUrl,
 });
 
 @autoinject()
