@@ -12,10 +12,10 @@ export declare class LeafletMapCustomElement {
     private hasBounds;
     element: HTMLElement;
     options: MapOptions;
-    api: LeafletApi;
+    api?: LeafletApi;
     fitBounds: boolean | "true" | "false";
     markers: IMarkerCustomElement[];
-    map: Map;
+    map?: Map;
     constructor(element: Element);
     bind(): void;
     attached(): void;

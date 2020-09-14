@@ -4,7 +4,7 @@ import { LeafletMapCustomElement } from './leaflet-map';
 export declare class CircleMarkerCustomElement implements IMarkerCustomElement {
     private element;
     private map;
-    private marker;
+    private marker?;
     private disposables;
     private isAttached;
     private isAdded;

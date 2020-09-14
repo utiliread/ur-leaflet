@@ -9,6 +9,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.CircleMarkerCustomElement = void 0;
 var leaflet_1 = require("leaflet");
 var aurelia_framework_1 = require("aurelia-framework");
 var leaflet_map_1 = require("./leaflet-map");
@@ -28,8 +29,13 @@ var CircleMarkerCustomElement = /** @class */ (function () {
     };
     CircleMarkerCustomElement.prototype.attached = function () {
         var _this = this;
+        var marker = this.marker;
+        var map = this.map.map;
+        if (!marker || !map) {
+            throw new Error('Element is not bound');
+        }
         this.disposables = [
-            utils_1.listen(this.marker, 'click', function (event) {
+            utils_1.listen(marker, 'click', function (event) {
                 var customEvent = aurelia_framework_1.DOM.createCustomEvent('click', {
                     bubbles: true,
                     detail: _this.model
@@ -43,23 +49,26 @@ var CircleMarkerCustomElement = /** @class */ (function () {
                 });
                 _this.element.dispatchEvent(customEvent);
                 if (_this.popup) {
-                    _this.map.map.openPopup(_this.popup, _this.marker.getLatLng(), _this.popupOptions);
+                    map.openPopup(_this.popup, marker.getLatLng(), _this.popupOptions);
                 }
             })
         ];
         if (this.delay !== undefined) {
             this.disposables.push(createTimeout(function () {
-                _this.map.map.addLayer(_this.marker);
+                map.addLayer(marker);
                 _this.isAdded = true;
             }, Number(this.delay)));
         }
         else {
-            this.map.map.addLayer(this.marker);
+            map.addLayer(marker);
             this.isAdded = true;
         }
         this.isAttached = true;
     };
     CircleMarkerCustomElement.prototype.detached = function () {
+        if (!this.marker) {
+            throw new Error('Element is not bound');
+        }
         if (this.map && this.map.map && this.isAdded) {
             this.map.map.removeLayer(this.marker);
         }
@@ -70,20 +79,26 @@ var CircleMarkerCustomElement = /** @class */ (function () {
         this.isAttached = false;
     };
     CircleMarkerCustomElement.prototype.unbind = function () {
+        if (!this.marker) {
+            throw new Error('Element is not bound');
+        }
         this.marker.remove();
         delete this.marker;
     };
     CircleMarkerCustomElement.prototype.positionChanged = function () {
-        if (this.isAttached) {
+        if (this.marker && this.isAttached) {
             this.marker.setLatLng([this.lat, this.lng]);
         }
     };
     CircleMarkerCustomElement.prototype.optionsChanged = function () {
-        if (this.isAttached && this.options) {
+        if (this.marker && this.isAttached && this.options) {
             this.marker.setStyle(this.options);
         }
     };
     CircleMarkerCustomElement.prototype.getLatLng = function () {
+        if (!this.marker) {
+            throw new Error('Element is not bound');
+        }
         return this.marker.getLatLng();
     };
     __decorate([

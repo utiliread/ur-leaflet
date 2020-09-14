@@ -25,7 +25,7 @@ export class LeafletMapCustomElement {
     };
 
     @bindable({ defaultBindingMode: bindingMode.twoWay })
-    api!: LeafletApi;
+    api?: LeafletApi;
 
     @bindable()
     fitBounds: boolean | "true" | "false" = true;
@@ -33,7 +33,7 @@ export class LeafletMapCustomElement {
     @children('*')
     markers!: IMarkerCustomElement[];
 
-    map!: Map;
+    map?: Map;
 
     constructor(element: Element) {
         this.element = element as HTMLElement;
@@ -41,38 +41,42 @@ export class LeafletMapCustomElement {
 
     bind() {
         // Create map here so that components that use the api can get the map in their attached() lifecycle hook
-        this.map = map(this.element, this.options);
+        const mapInstance = this.map = map(this.element, this.options);
 
         this.api = {
-            getMap: () => this.map,
+            getMap: () => mapInstance,
             goto: this.goto.bind(this)
         };
     }
 
     attached() {
+        const map = this.map;
+        if (!map) {
+            throw new Error('Element is not bound');
+        }
         const baseLayers = {
             "Kort": tileLayer('//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-            }).addTo(this.map),
+            }).addTo(map),
             "Satellit": tileLayer('//server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
                 attribution: '&copy; <a href="http://www.esri.com">Esri</a>'
             })
         };
 
-        control.layers(baseLayers).addTo(this.map);
+        control.layers(baseLayers).addTo(map);
 
         if (this.markers) {
             if (this.fitBounds.toString() === "true") {
                 const bounds = latLngBounds(this.markers.map(x => x.getLatLng()).filter(x => !!x));
 
                 if (bounds.isValid()) {
-                    this.map.fitBounds(bounds);
+                    map.fitBounds(bounds);
                     this.hasBounds = true;
                 }
             }
         }
 
-        this.map.on('areaselected', event => {
+        map.on('areaselected', event => {
             const bounds = (<any>event).bounds as LatLngBounds;
             const selected = this.markers.filter(x => bounds.contains(x.getLatLng())).map(x => x.model);
 
@@ -93,13 +97,18 @@ export class LeafletMapCustomElement {
     }
 
     detached() {
+        if (!this.map) {
+            throw new Error('Element is not bound');
+        }
+
         this.map.remove();
         delete this.map;
+        delete this.api;
         this.isAttached = false;
     }
 
     markersChanged() {
-        if (this.isAttached) {
+        if (this.map && this.isAttached) {
             if (this.fitBounds.toString() === "true") {
                 const bounds = latLngBounds(this.markers.map(x => x.getLatLng()).filter(x => !!x));
 
@@ -112,14 +121,16 @@ export class LeafletMapCustomElement {
     }
 
     goto(center: LatLng, zoom?: number) {
-        if (zoom) {
-            this.map.setView(center, zoom, {
-                animate: true,
-                duration: 1
-            });
-        }
-        else {
-            this.map.panTo(center);
+        if (this.map) {
+            if (zoom) {
+                this.map.setView(center, zoom, {
+                    animate: true,
+                    duration: 1
+                });
+            }
+            else {
+                this.map.panTo(center);
+            }
         }
     }
 }

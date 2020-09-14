@@ -34,9 +34,14 @@ var DefaultMarkerCustomElement = /** @class */ (function () {
     };
     DefaultMarkerCustomElement.prototype.attached = function () {
         var _this = this;
-        this.map.map.addLayer(this.marker);
+        var marker = this.marker;
+        var map = this.map.map;
+        if (!marker || !map) {
+            throw new Error('Element is not bound');
+        }
+        map.addLayer(marker);
         this.disposables = [
-            listen(this.marker, 'click', function (event) {
+            listen(marker, 'click', function (event) {
                 var customEvent = DOM.createCustomEvent('click', {
                     bubbles: true,
                     detail: _this.model
@@ -50,7 +55,7 @@ var DefaultMarkerCustomElement = /** @class */ (function () {
                 });
                 _this.element.dispatchEvent(customEvent);
             }),
-            listen(this.marker, 'drag', function (event) {
+            listen(marker, 'drag', function (event) {
                 if (_this.options && _this.options.draggable) {
                     var position = event.latlng;
                     _this.lat = position.lat;
@@ -61,6 +66,9 @@ var DefaultMarkerCustomElement = /** @class */ (function () {
         this.isAttached = true;
     };
     DefaultMarkerCustomElement.prototype.detached = function () {
+        if (!this.marker) {
+            throw new Error('Element is not bound');
+        }
         if (this.map && this.map.map) {
             this.map.map.removeLayer(this.marker);
         }
@@ -71,16 +79,19 @@ var DefaultMarkerCustomElement = /** @class */ (function () {
         this.isAttached = false;
     };
     DefaultMarkerCustomElement.prototype.unbind = function () {
+        if (!this.marker) {
+            throw new Error('Element is not bound');
+        }
         this.marker.remove();
         delete this.marker;
     };
     DefaultMarkerCustomElement.prototype.positionChanged = function () {
-        if (this.isAttached) {
+        if (this.marker && this.isAttached) {
             this.marker.setLatLng([this.lat, this.lng]);
         }
     };
     DefaultMarkerCustomElement.prototype.optionsChanged = function () {
-        if (this.isAttached && this.marker.dragging && this.options) {
+        if (this.marker && this.isAttached && this.marker.dragging && this.options) {
             if (this.options.draggable) {
                 this.marker.dragging.enable();
             }
@@ -90,6 +101,9 @@ var DefaultMarkerCustomElement = /** @class */ (function () {
         }
     };
     DefaultMarkerCustomElement.prototype.getLatLng = function () {
+        if (!this.marker) {
+            throw new Error('Element is not bound');
+        }
         return this.marker.getLatLng();
     };
     __decorate([

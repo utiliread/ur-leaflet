@@ -25,35 +25,38 @@ var LeafletMapCustomElement = /** @class */ (function () {
         this.element = element;
     }
     LeafletMapCustomElement.prototype.bind = function () {
-        var _this = this;
         // Create map here so that components that use the api can get the map in their attached() lifecycle hook
-        this.map = map(this.element, this.options);
+        var mapInstance = this.map = map(this.element, this.options);
         this.api = {
-            getMap: function () { return _this.map; },
+            getMap: function () { return mapInstance; },
             goto: this.goto.bind(this)
         };
     };
     LeafletMapCustomElement.prototype.attached = function () {
         var _this = this;
+        var map = this.map;
+        if (!map) {
+            throw new Error('Element is not bound');
+        }
         var baseLayers = {
             "Kort": tileLayer('//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-            }).addTo(this.map),
+            }).addTo(map),
             "Satellit": tileLayer('//server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
                 attribution: '&copy; <a href="http://www.esri.com">Esri</a>'
             })
         };
-        control.layers(baseLayers).addTo(this.map);
+        control.layers(baseLayers).addTo(map);
         if (this.markers) {
             if (this.fitBounds.toString() === "true") {
                 var bounds = latLngBounds(this.markers.map(function (x) { return x.getLatLng(); }).filter(function (x) { return !!x; }));
                 if (bounds.isValid()) {
-                    this.map.fitBounds(bounds);
+                    map.fitBounds(bounds);
                     this.hasBounds = true;
                 }
             }
         }
-        this.map.on('areaselected', function (event) {
+        map.on('areaselected', function (event) {
             var bounds = event.bounds;
             var selected = _this.markers.filter(function (x) { return bounds.contains(x.getLatLng()); }).map(function (x) { return x.model; });
             var detail = {
@@ -69,12 +72,16 @@ var LeafletMapCustomElement = /** @class */ (function () {
         this.isAttached = true;
     };
     LeafletMapCustomElement.prototype.detached = function () {
+        if (!this.map) {
+            throw new Error('Element is not bound');
+        }
         this.map.remove();
         delete this.map;
+        delete this.api;
         this.isAttached = false;
     };
     LeafletMapCustomElement.prototype.markersChanged = function () {
-        if (this.isAttached) {
+        if (this.map && this.isAttached) {
             if (this.fitBounds.toString() === "true") {
                 var bounds = latLngBounds(this.markers.map(function (x) { return x.getLatLng(); }).filter(function (x) { return !!x; }));
                 if (bounds.isValid() && (!this.hasBounds || !this.map.getBounds().equals(bounds))) {
@@ -85,14 +92,16 @@ var LeafletMapCustomElement = /** @class */ (function () {
         }
     };
     LeafletMapCustomElement.prototype.goto = function (center, zoom) {
-        if (zoom) {
-            this.map.setView(center, zoom, {
-                animate: true,
-                duration: 1
-            });
-        }
-        else {
-            this.map.panTo(center);
+        if (this.map) {
+            if (zoom) {
+                this.map.setView(center, zoom, {
+                    animate: true,
+                    duration: 1
+                });
+            }
+            else {
+                this.map.panTo(center);
+            }
         }
     };
     __decorate([

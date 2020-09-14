@@ -20,7 +20,7 @@ Icon.Default.mergeOptions({
 @autoinject()
 @noView()
 export class DefaultMarkerCustomElement implements IMarkerCustomElement {
-    private marker!: Marker;
+    private marker?: Marker;
     private disposables!: Disposable[];
     private isAttached = false;
 
@@ -44,10 +44,16 @@ export class DefaultMarkerCustomElement implements IMarkerCustomElement {
     }
 
     attached() {
-        this.map.map.addLayer(this.marker);
+        const marker = this.marker;
+        const map = this.map.map;
+        if (!marker || !map) {
+            throw new Error('Element is not bound');
+        }
+
+        map.addLayer(marker);
 
         this.disposables = [
-            listen(this.marker, 'click', (event: LeafletMouseEvent) => {
+            listen(marker, 'click', (event: LeafletMouseEvent) => {
                 const customEvent = DOM.createCustomEvent('click', {
                     bubbles: true,
                     detail: this.model
@@ -63,7 +69,7 @@ export class DefaultMarkerCustomElement implements IMarkerCustomElement {
 
                 this.element.dispatchEvent(customEvent);
             }),
-            listen(this.marker, 'drag', (event: LeafletMouseEvent) => {
+            listen(marker, 'drag', (event: LeafletMouseEvent) => {
                 if (this.options && this.options.draggable) {
                     const position = event.latlng;
                     this.lat = position.lat;
@@ -76,6 +82,10 @@ export class DefaultMarkerCustomElement implements IMarkerCustomElement {
     }
 
     detached() {
+        if (!this.marker) {
+            throw new Error('Element is not bound');
+        }
+
         if (this.map && this.map.map) {
             this.map.map.removeLayer(this.marker);
         }
@@ -88,18 +98,22 @@ export class DefaultMarkerCustomElement implements IMarkerCustomElement {
     }
 
     unbind() {
+        if (!this.marker) {
+            throw new Error('Element is not bound');
+        }
+
         this.marker.remove();
         delete this.marker;
     }
 
     positionChanged() {
-        if (this.isAttached) {
+        if (this.marker && this.isAttached) {
             this.marker.setLatLng([this.lat, this.lng]);
         }
     }
 
     optionsChanged() {
-        if (this.isAttached && this.marker.dragging && this.options) {
+        if (this.marker && this.isAttached && this.marker.dragging && this.options) {
             if (this.options.draggable) {
                 this.marker.dragging.enable();
             }
@@ -110,6 +124,9 @@ export class DefaultMarkerCustomElement implements IMarkerCustomElement {
     }
 
     getLatLng() {
+        if (!this.marker) {
+            throw new Error('Element is not bound');
+        }
         return this.marker.getLatLng();
     }
 }

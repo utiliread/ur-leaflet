@@ -9,7 +9,7 @@ import { listen } from './utils';
 @autoinject()
 @noView()
 export class CircleMarkerCustomElement implements IMarkerCustomElement {
-    private marker!: CircleMarker;
+    private marker?: CircleMarker;
     private disposables!: Disposable[];
     private isAttached = false;
     private isAdded = false;
@@ -43,8 +43,14 @@ export class CircleMarkerCustomElement implements IMarkerCustomElement {
     }
 
     attached() {
+        const marker = this.marker;
+        const map = this.map.map;
+        if (!marker || !map) {
+            throw new Error('Element is not bound');
+        }
+
         this.disposables = [
-            listen(this.marker, 'click', (event: LeafletMouseEvent) => {
+            listen(marker, 'click', (event: LeafletMouseEvent) => {
                 const customEvent = DOM.createCustomEvent('click', {
                     bubbles: true,
                     detail: this.model
@@ -61,19 +67,19 @@ export class CircleMarkerCustomElement implements IMarkerCustomElement {
                 this.element.dispatchEvent(customEvent);
 
                 if (this.popup) {
-                    this.map.map.openPopup(this.popup, this.marker.getLatLng(), this.popupOptions);
+                    map.openPopup(this.popup, marker.getLatLng(), this.popupOptions);
                 }
             })
         ];
 
         if (this.delay !== undefined) {
             this.disposables.push(createTimeout(() => {
-                this.map.map.addLayer(this.marker);
+                map.addLayer(marker);
                 this.isAdded = true;
             }, Number(this.delay)));
         }
         else {
-            this.map.map.addLayer(this.marker);
+            map.addLayer(marker);
             this.isAdded = true;
         }
 
@@ -81,6 +87,10 @@ export class CircleMarkerCustomElement implements IMarkerCustomElement {
     }
 
     detached() {
+        if (!this.marker) {
+            throw new Error('Element is not bound');
+        }
+
         if (this.map && this.map.map && this.isAdded) {
             this.map.map.removeLayer(this.marker);
         }
@@ -93,23 +103,30 @@ export class CircleMarkerCustomElement implements IMarkerCustomElement {
     }
 
     unbind() {
+        if (!this.marker) {
+            throw new Error('Element is not bound');
+        }
+
         this.marker.remove();
         delete this.marker;
     }
 
     positionChanged() {
-        if (this.isAttached) {
+        if (this.marker && this.isAttached) {
             this.marker.setLatLng([this.lat, this.lng]);
         }
     }
 
     optionsChanged() {
-        if (this.isAttached && this.options) {
+        if (this.marker && this.isAttached && this.options) {
             this.marker.setStyle(this.options);
         }
     }
 
     getLatLng() {
+        if (!this.marker) {
+            throw new Error('Element is not bound');
+        }
         return this.marker.getLatLng();
     }
 }

@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.configure = void 0;
 var aurelia_framework_1 = require("aurelia-framework");
 function configure(frameworkConfiguration) {
     frameworkConfiguration.globalResources([
