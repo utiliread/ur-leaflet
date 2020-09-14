@@ -12,9 +12,9 @@ import { listen } from './utils';
 const defaultIconPrototype: any = Icon.Default.prototype;
 delete defaultIconPrototype._getIconUrl;
 Icon.Default.mergeOptions({
-    iconRetinaUrl: require('leaflet/dist/images/marker-icon-2x.png'),
-    iconUrl: require('leaflet/dist/images/marker-icon.png'),
-    shadowUrl: require('leaflet/dist/images/marker-shadow.png'),
+    iconRetinaUrl: require('leaflet/dist/images/marker-icon-2x.png')?.default,
+    iconUrl: require('leaflet/dist/images/marker-icon.png')?.default,
+    shadowUrl: require('leaflet/dist/images/marker-shadow.png')?.default,
 });
 
 @autoinject()

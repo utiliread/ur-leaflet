@@ -8,6 +8,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+var _a, _b, _c;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.DefaultMarkerCustomElement = void 0;
 require("./default-marker.css");
@@ -20,9 +21,9 @@ var utils_1 = require("./utils");
 var defaultIconPrototype = leaflet_1.Icon.Default.prototype;
 delete defaultIconPrototype._getIconUrl;
 leaflet_1.Icon.Default.mergeOptions({
-    iconRetinaUrl: require('leaflet/dist/images/marker-icon-2x.png'),
-    iconUrl: require('leaflet/dist/images/marker-icon.png'),
-    shadowUrl: require('leaflet/dist/images/marker-shadow.png'),
+    iconRetinaUrl: (_a = require('leaflet/dist/images/marker-icon-2x.png')) === null || _a === void 0 ? void 0 : _a.default,
+    iconUrl: (_b = require('leaflet/dist/images/marker-icon.png')) === null || _b === void 0 ? void 0 : _b.default,
+    shadowUrl: (_c = require('leaflet/dist/images/marker-shadow.png')) === null || _c === void 0 ? void 0 : _c.default,
 });
 var DefaultMarkerCustomElement = /** @class */ (function () {
     function DefaultMarkerCustomElement(element, map) {
