@@ -29,7 +29,7 @@ var LeafletMapCustomElement = /** @class */ (function () {
     }
     LeafletMapCustomElement.prototype.bind = function () {
         // Create map here so that components that use the api can get the map in their attached() lifecycle hook
-        var mapInstance = this.map = leaflet_1.map(this.element, this.options);
+        var mapInstance = this.map = (0, leaflet_1.map)(this.element, this.options);
         this.api = {
             getMap: function () { return mapInstance; },
             goto: this.goto.bind(this)
@@ -37,22 +37,23 @@ var LeafletMapCustomElement = /** @class */ (function () {
     };
     LeafletMapCustomElement.prototype.attached = function () {
         var _this = this;
+        var _a;
         var map = this.map;
         if (!map) {
             throw new Error('Element is not bound');
         }
         var baseLayers = {
-            "Kort": leaflet_1.tileLayer('//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            "Kort": (0, leaflet_1.tileLayer)('//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
             }).addTo(map),
-            "Satellit": leaflet_1.tileLayer('//server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+            "Satellit": (0, leaflet_1.tileLayer)('//server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
                 attribution: '&copy; <a href="http://www.esri.com">Esri</a>'
             })
         };
         leaflet_1.control.layers(baseLayers).addTo(map);
-        if (this.markers) {
+        if ((_a = this.markers) === null || _a === void 0 ? void 0 : _a.length) {
             if (this.fitBounds.toString() === "true") {
-                var bounds = leaflet_1.latLngBounds(this.markers.map(function (x) { return x.getLatLng(); }).filter(function (x) { return !!x; }));
+                var bounds = (0, leaflet_1.latLngBounds)(this.markers.map(function (x) { return x.getLatLng(); }).filter(function (x) { return !!x; }));
                 if (bounds.isValid()) {
                     map.fitBounds(bounds);
                     this.hasBounds = true;
@@ -86,7 +87,7 @@ var LeafletMapCustomElement = /** @class */ (function () {
     LeafletMapCustomElement.prototype.markersChanged = function () {
         if (this.map && this.isAttached) {
             if (this.fitBounds.toString() === "true") {
-                var bounds = leaflet_1.latLngBounds(this.markers.map(function (x) { return x.getLatLng(); }).filter(function (x) { return !!x; }));
+                var bounds = (0, leaflet_1.latLngBounds)(this.markers.map(function (x) { return x.getLatLng(); }).filter(function (x) { return !!x; }));
                 if (bounds.isValid() && (!this.hasBounds || !this.map.getBounds().equals(bounds))) {
                     this.map.fitBounds(bounds);
                     this.hasBounds = true;
@@ -108,23 +109,23 @@ var LeafletMapCustomElement = /** @class */ (function () {
         }
     };
     __decorate([
-        aurelia_framework_1.bindable(),
+        (0, aurelia_framework_1.bindable)(),
         __metadata("design:type", Object)
     ], LeafletMapCustomElement.prototype, "options", void 0);
     __decorate([
-        aurelia_framework_1.bindable({ defaultBindingMode: aurelia_framework_1.bindingMode.twoWay }),
+        (0, aurelia_framework_1.bindable)({ defaultBindingMode: aurelia_framework_1.bindingMode.twoWay }),
         __metadata("design:type", Object)
     ], LeafletMapCustomElement.prototype, "api", void 0);
     __decorate([
-        aurelia_framework_1.bindable(),
+        (0, aurelia_framework_1.bindable)(),
         __metadata("design:type", Object)
     ], LeafletMapCustomElement.prototype, "fitBounds", void 0);
     __decorate([
-        aurelia_framework_1.children('*'),
+        (0, aurelia_framework_1.children)('*'),
         __metadata("design:type", Array)
     ], LeafletMapCustomElement.prototype, "markers", void 0);
     LeafletMapCustomElement = __decorate([
-        aurelia_framework_1.autoinject(),
+        (0, aurelia_framework_1.autoinject)(),
         __metadata("design:paramtypes", [Element])
     ], LeafletMapCustomElement);
     return LeafletMapCustomElement;

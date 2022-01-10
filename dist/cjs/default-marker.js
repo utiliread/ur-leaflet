@@ -37,7 +37,7 @@ var DefaultMarkerCustomElement = /** @class */ (function () {
         this.lng = 0;
     }
     DefaultMarkerCustomElement.prototype.bind = function () {
-        this.marker = leaflet_1.marker([this.lat, this.lng], this.options);
+        this.marker = (0, leaflet_1.marker)([this.lat, this.lng], this.options);
     };
     DefaultMarkerCustomElement.prototype.attached = function () {
         var _this = this;
@@ -48,13 +48,13 @@ var DefaultMarkerCustomElement = /** @class */ (function () {
         }
         map.addLayer(marker);
         this.disposables = [
-            utils_1.listen(marker, 'click', function (event) {
+            (0, utils_1.listen)(marker, 'click', function (event) {
                 var customEvent = aurelia_framework_1.DOM.createCustomEvent('click', {
                     bubbles: true,
                     detail: _this.model
                 });
                 // Leaflet requires clientX and clientY to be present when dispatching events
-                lodash_es_1.extend(customEvent, {
+                (0, lodash_es_1.extend)(customEvent, {
                     clientX: event.originalEvent.clientX,
                     clientY: event.originalEvent.clientY,
                     ctrlKey: event.originalEvent.ctrlKey,
@@ -62,7 +62,7 @@ var DefaultMarkerCustomElement = /** @class */ (function () {
                 });
                 _this.element.dispatchEvent(customEvent);
             }),
-            utils_1.listen(marker, 'drag', function (event) {
+            (0, utils_1.listen)(marker, 'drag', function (event) {
                 if (_this.options && _this.options.draggable) {
                     var position = event.latlng;
                     _this.lat = position.lat;
@@ -114,24 +114,24 @@ var DefaultMarkerCustomElement = /** @class */ (function () {
         return this.marker.getLatLng();
     };
     __decorate([
-        aurelia_framework_1.bindable({ defaultBindingMode: aurelia_framework_1.bindingMode.twoWay, changeHandler: "positionChanged" }),
+        (0, aurelia_framework_1.bindable)({ defaultBindingMode: aurelia_framework_1.bindingMode.twoWay, changeHandler: "positionChanged" }),
         __metadata("design:type", Number)
     ], DefaultMarkerCustomElement.prototype, "lat", void 0);
     __decorate([
-        aurelia_framework_1.bindable({ defaultBindingMode: aurelia_framework_1.bindingMode.twoWay, changeHandler: "positionChanged" }),
+        (0, aurelia_framework_1.bindable)({ defaultBindingMode: aurelia_framework_1.bindingMode.twoWay, changeHandler: "positionChanged" }),
         __metadata("design:type", Number)
     ], DefaultMarkerCustomElement.prototype, "lng", void 0);
     __decorate([
-        aurelia_framework_1.bindable(),
+        (0, aurelia_framework_1.bindable)(),
         __metadata("design:type", Object)
     ], DefaultMarkerCustomElement.prototype, "model", void 0);
     __decorate([
-        aurelia_framework_1.bindable(),
+        (0, aurelia_framework_1.bindable)(),
         __metadata("design:type", Object)
     ], DefaultMarkerCustomElement.prototype, "options", void 0);
     DefaultMarkerCustomElement = __decorate([
-        aurelia_framework_1.autoinject(),
-        aurelia_framework_1.noView(),
+        (0, aurelia_framework_1.autoinject)(),
+        (0, aurelia_framework_1.noView)(),
         __metadata("design:paramtypes", [Element, leaflet_map_1.LeafletMapCustomElement])
     ], DefaultMarkerCustomElement);
     return DefaultMarkerCustomElement;

@@ -65,7 +65,7 @@ export class LeafletMapCustomElement {
 
         control.layers(baseLayers).addTo(map);
 
-        if (this.markers) {
+        if (this.markers?.length) {
             if (this.fitBounds.toString() === "true") {
                 const bounds = latLngBounds(this.markers.map(x => x.getLatLng()).filter(x => !!x));
 
