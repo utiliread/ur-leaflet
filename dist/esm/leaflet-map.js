@@ -34,7 +34,6 @@ var LeafletMapCustomElement = /** @class */ (function () {
     };
     LeafletMapCustomElement.prototype.attached = function () {
         var _this = this;
-        var _a;
         var map = this.map;
         if (!map) {
             throw new Error('Element is not bound');
@@ -48,12 +47,15 @@ var LeafletMapCustomElement = /** @class */ (function () {
             })
         };
         control.layers(baseLayers).addTo(map);
-        if ((_a = this.markers) === null || _a === void 0 ? void 0 : _a.length) {
+        if (this.markers) {
             if (this.fitBounds.toString() === "true") {
-                var bounds = latLngBounds(this.markers.map(function (x) { return x.getLatLng(); }).filter(function (x) { return !!x; }));
-                if (bounds.isValid()) {
-                    map.fitBounds(bounds);
-                    this.hasBounds = true;
+                var latlngs = this.markers.map(function (x) { return x.getLatLng(); }).filter(function (x) { return !!x; });
+                if (latlngs.length) {
+                    var bounds = latLngBounds(latlngs);
+                    if (bounds.isValid()) {
+                        map.fitBounds(bounds);
+                        this.hasBounds = true;
+                    }
                 }
             }
         }

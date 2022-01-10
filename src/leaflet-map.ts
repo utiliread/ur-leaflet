@@ -65,13 +65,16 @@ export class LeafletMapCustomElement {
 
         control.layers(baseLayers).addTo(map);
 
-        if (this.markers?.length) {
+        if (this.markers) {
             if (this.fitBounds.toString() === "true") {
-                const bounds = latLngBounds(this.markers.map(x => x.getLatLng()).filter(x => !!x));
+                const latlngs = this.markers.map(x => x.getLatLng()).filter(x => !!x);
+                if (latlngs.length) {
+                    const bounds = latLngBounds(latlngs);
 
-                if (bounds.isValid()) {
-                    map.fitBounds(bounds);
-                    this.hasBounds = true;
+                    if (bounds.isValid()) {
+                        map.fitBounds(bounds);
+                        this.hasBounds = true;
+                    }
                 }
             }
         }
