@@ -84,6 +84,10 @@ export class DefaultMarkerCustomElement implements IMarkerCustomElement {
                     const position = event.latlng;
                     this.lat = position.lat;
                     this.lng = position.lng;
+                    this.point = {
+                        type: "Point",
+                        coordinates: [this.lng, this.lat],
+                    };
                 }
             })
         ];

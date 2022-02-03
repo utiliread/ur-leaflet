@@ -68,6 +68,10 @@ var DefaultMarkerCustomElement = /** @class */ (function () {
                     var position = event.latlng;
                     _this.lat = position.lat;
                     _this.lng = position.lng;
+                    _this.point = {
+                        type: "Point",
+                        coordinates: [_this.lng, _this.lat],
+                    };
                 }
             })
         ];
