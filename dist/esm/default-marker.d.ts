@@ -10,6 +10,7 @@ export declare class DefaultMarkerCustomElement implements IMarkerCustomElement 
     private isAttached;
     lat: number;
     lng: number;
+    point?: GeoJSON.Point;
     model: any;
     options?: MarkerOptions;
     constructor(element: Element, map: LeafletMapCustomElement);
@@ -17,6 +18,7 @@ export declare class DefaultMarkerCustomElement implements IMarkerCustomElement 
     attached(): void;
     detached(): void;
     unbind(): void;
+    pointChanged(): void;
     positionChanged(): void;
     optionsChanged(): void;
     getLatLng(): import("leaflet").LatLng;

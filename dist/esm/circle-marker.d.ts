@@ -10,6 +10,7 @@ export declare class CircleMarkerCustomElement implements IMarkerCustomElement {
     private isAdded;
     lat: number;
     lng: number;
+    point?: GeoJSON.Point;
     model: any;
     options?: CircleMarkerOptions;
     delay?: number | string;
@@ -20,6 +21,7 @@ export declare class CircleMarkerCustomElement implements IMarkerCustomElement {
     attached(): void;
     detached(): void;
     unbind(): void;
+    pointChanged(): void;
     positionChanged(): void;
     optionsChanged(): void;
     getLatLng(): import("leaflet").LatLng;

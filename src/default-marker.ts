@@ -33,6 +33,9 @@ export class DefaultMarkerCustomElement implements IMarkerCustomElement {
     @bindable({ defaultBindingMode: bindingMode.twoWay, changeHandler: "positionChanged" })
     lng: number = 0;
 
+    @bindable({ defaultBindingMode: bindingMode.twoWay, changeHandler: "pointChanged" })
+    point?: GeoJSON.Point;
+
     @bindable()
     model: any;
 
@@ -107,6 +110,13 @@ export class DefaultMarkerCustomElement implements IMarkerCustomElement {
 
         this.marker.remove();
         delete this.marker;
+    }
+
+    pointChanged() {
+        if (this.point) {
+            this.lng = this.point.coordinates[0];
+            this.lat = this.point.coordinates[1];
+        }
     }
 
     positionChanged() {

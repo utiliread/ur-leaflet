@@ -82,6 +82,12 @@ var CircleMarkerCustomElement = /** @class */ (function () {
         this.marker.remove();
         delete this.marker;
     };
+    CircleMarkerCustomElement.prototype.pointChanged = function () {
+        if (this.point) {
+            this.lng = this.point.coordinates[0];
+            this.lat = this.point.coordinates[1];
+        }
+    };
     CircleMarkerCustomElement.prototype.positionChanged = function () {
         if (this.marker && this.isAttached) {
             this.marker.setLatLng([this.lat, this.lng]);
@@ -106,6 +112,10 @@ var CircleMarkerCustomElement = /** @class */ (function () {
         bindable({ defaultBindingMode: bindingMode.twoWay, changeHandler: "positionChanged" }),
         __metadata("design:type", Number)
     ], CircleMarkerCustomElement.prototype, "lng", void 0);
+    __decorate([
+        bindable({ defaultBindingMode: bindingMode.twoWay, changeHandler: "pointChanged" }),
+        __metadata("design:type", Object)
+    ], CircleMarkerCustomElement.prototype, "point", void 0);
     __decorate([
         bindable(),
         __metadata("design:type", Object)
