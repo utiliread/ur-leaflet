@@ -10,7 +10,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var _a, _b, _c;
 import './default-marker.css';
 import { DOM, autoinject, bindable, bindingMode, noView } from 'aurelia-framework';
-import { Icon, marker } from 'leaflet';
+import { Icon, marker, latLng } from 'leaflet';
 import { LeafletMapCustomElement } from './leaflet-map';
 import { extend } from 'lodash-es';
 import { listen } from './utils';
@@ -34,6 +34,10 @@ var DefaultMarkerCustomElement = /** @class */ (function () {
         this.lng = 0;
     }
     DefaultMarkerCustomElement.prototype.bind = function () {
+        if (this.point) {
+            this.lng = this.point.coordinates[0];
+            this.lat = this.point.coordinates[1];
+        }
         this.marker = marker([this.lat, this.lng], this.options);
     };
     DefaultMarkerCustomElement.prototype.attached = function () {
@@ -97,7 +101,7 @@ var DefaultMarkerCustomElement = /** @class */ (function () {
     };
     DefaultMarkerCustomElement.prototype.positionChanged = function () {
         if (this.marker && this.isAttached) {
-            this.marker.setLatLng([this.lat, this.lng]);
+            this.marker.setLatLng(latLng(this.lat, this.lng));
         }
     };
     DefaultMarkerCustomElement.prototype.optionsChanged = function () {

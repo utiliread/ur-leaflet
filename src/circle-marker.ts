@@ -1,4 +1,4 @@
-import { CircleMarker, CircleMarkerOptions, LeafletMouseEvent, circleMarker, PopupOptions } from 'leaflet';
+import { CircleMarker, CircleMarkerOptions, LeafletMouseEvent, circleMarker, PopupOptions, latLng } from 'leaflet';
 import { DOM, Disposable, autoinject, bindable, bindingMode, noView } from 'aurelia-framework';
 
 import { IMarkerCustomElement } from './marker-custom-element';
@@ -42,6 +42,10 @@ export class CircleMarkerCustomElement implements IMarkerCustomElement {
     }
 
     bind() {
+        if (this.point) {
+            this.lng = this.point.coordinates[0];
+            this.lat = this.point.coordinates[1];
+        }
         this.marker = circleMarker([this.lat, this.lng], this.options);
     }
 
@@ -123,7 +127,7 @@ export class CircleMarkerCustomElement implements IMarkerCustomElement {
 
     positionChanged() {
         if (this.marker && this.isAttached) {
-            this.marker.setLatLng([this.lat, this.lng]);
+            this.marker.setLatLng(latLng(this.lat, this.lng));
         }
     }
 

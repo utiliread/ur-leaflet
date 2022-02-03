@@ -7,7 +7,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-import { circleMarker } from 'leaflet';
+import { circleMarker, latLng } from 'leaflet';
 import { DOM, autoinject, bindable, bindingMode, noView } from 'aurelia-framework';
 import { LeafletMapCustomElement } from './leaflet-map';
 import { extend } from 'lodash-es';
@@ -22,6 +22,10 @@ var CircleMarkerCustomElement = /** @class */ (function () {
         this.lng = 0;
     }
     CircleMarkerCustomElement.prototype.bind = function () {
+        if (this.point) {
+            this.lng = this.point.coordinates[0];
+            this.lat = this.point.coordinates[1];
+        }
         this.marker = circleMarker([this.lat, this.lng], this.options);
     };
     CircleMarkerCustomElement.prototype.attached = function () {
@@ -90,7 +94,7 @@ var CircleMarkerCustomElement = /** @class */ (function () {
     };
     CircleMarkerCustomElement.prototype.positionChanged = function () {
         if (this.marker && this.isAttached) {
-            this.marker.setLatLng([this.lat, this.lng]);
+            this.marker.setLatLng(latLng(this.lat, this.lng));
         }
     };
     CircleMarkerCustomElement.prototype.optionsChanged = function () {

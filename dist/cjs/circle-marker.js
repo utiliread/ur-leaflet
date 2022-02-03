@@ -25,6 +25,10 @@ var CircleMarkerCustomElement = /** @class */ (function () {
         this.lng = 0;
     }
     CircleMarkerCustomElement.prototype.bind = function () {
+        if (this.point) {
+            this.lng = this.point.coordinates[0];
+            this.lat = this.point.coordinates[1];
+        }
         this.marker = (0, leaflet_1.circleMarker)([this.lat, this.lng], this.options);
     };
     CircleMarkerCustomElement.prototype.attached = function () {
@@ -93,7 +97,7 @@ var CircleMarkerCustomElement = /** @class */ (function () {
     };
     CircleMarkerCustomElement.prototype.positionChanged = function () {
         if (this.marker && this.isAttached) {
-            this.marker.setLatLng([this.lat, this.lng]);
+            this.marker.setLatLng((0, leaflet_1.latLng)(this.lat, this.lng));
         }
     };
     CircleMarkerCustomElement.prototype.optionsChanged = function () {

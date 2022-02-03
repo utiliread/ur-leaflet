@@ -1,7 +1,7 @@
 import './default-marker.css';
 
 import { DOM, Disposable, autoinject, bindable, bindingMode, noView } from 'aurelia-framework';
-import { Icon, LeafletMouseEvent, Marker, MarkerOptions, marker } from 'leaflet';
+import { Icon, LeafletMouseEvent, Marker, MarkerOptions, marker, latLng } from 'leaflet';
 
 import { IMarkerCustomElement } from './marker-custom-element';
 import { LeafletMapCustomElement } from './leaflet-map';
@@ -46,6 +46,10 @@ export class DefaultMarkerCustomElement implements IMarkerCustomElement {
     }
 
     bind() {
+        if (this.point) {
+            this.lng = this.point.coordinates[0];
+            this.lat = this.point.coordinates[1];
+        }
         this.marker = marker([this.lat, this.lng], this.options);
     }
 
@@ -121,7 +125,7 @@ export class DefaultMarkerCustomElement implements IMarkerCustomElement {
 
     positionChanged() {
         if (this.marker && this.isAttached) {
-            this.marker.setLatLng([this.lat, this.lng]);
+            this.marker.setLatLng(latLng(this.lat, this.lng));
         }
     }
 
