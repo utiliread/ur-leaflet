@@ -25,7 +25,7 @@ Icon.Default.mergeOptions({
     iconUrl: (_b = iconUrl.default) !== null && _b !== void 0 ? _b : iconUrl,
     shadowUrl: (_c = shadowUrl.default) !== null && _c !== void 0 ? _c : shadowUrl,
 });
-var DefaultMarkerCustomElement = /** @class */ (function () {
+export var DefaultMarkerCustomElement = /** @class */ (function () {
     function DefaultMarkerCustomElement(element, map) {
         this.element = element;
         this.map = map;
@@ -151,5 +151,4 @@ var DefaultMarkerCustomElement = /** @class */ (function () {
     ], DefaultMarkerCustomElement);
     return DefaultMarkerCustomElement;
 }());
-export { DefaultMarkerCustomElement };
 //# sourceMappingURL=default-marker.js.map

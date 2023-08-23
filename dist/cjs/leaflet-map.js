@@ -17,7 +17,7 @@ require("leaflet-fullscreen/dist/leaflet.fullscreen.css");
 require("./leaflet-map.css");
 var aurelia_framework_1 = require("aurelia-framework");
 var leaflet_1 = require("leaflet");
-var LeafletMapCustomElement = /** @class */ (function () {
+var LeafletMapCustomElement = exports.LeafletMapCustomElement = /** @class */ (function () {
     function LeafletMapCustomElement(element) {
         this.isAttached = false;
         this.hasBounds = false;
@@ -132,5 +132,4 @@ var LeafletMapCustomElement = /** @class */ (function () {
     ], LeafletMapCustomElement);
     return LeafletMapCustomElement;
 }());
-exports.LeafletMapCustomElement = LeafletMapCustomElement;
 //# sourceMappingURL=leaflet-map.js.map

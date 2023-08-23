@@ -12,7 +12,7 @@ import { DOM, autoinject, bindable, bindingMode, noView } from 'aurelia-framewor
 import { LeafletMapCustomElement } from './leaflet-map';
 import { extend } from 'lodash-es';
 import { listen } from './utils';
-var CircleMarkerCustomElement = /** @class */ (function () {
+export var CircleMarkerCustomElement = /** @class */ (function () {
     function CircleMarkerCustomElement(element, map) {
         this.element = element;
         this.map = map;
@@ -147,7 +147,6 @@ var CircleMarkerCustomElement = /** @class */ (function () {
     ], CircleMarkerCustomElement);
     return CircleMarkerCustomElement;
 }());
-export { CircleMarkerCustomElement };
 function createTimeout(handler, timeout) {
     var handle = setTimeout(handler, timeout);
     return {

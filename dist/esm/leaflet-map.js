@@ -14,7 +14,7 @@ import 'leaflet-fullscreen/dist/leaflet.fullscreen.css';
 import './leaflet-map.css';
 import { DOM, autoinject, bindable, bindingMode, children } from 'aurelia-framework';
 import { control, latLngBounds, map, tileLayer } from 'leaflet';
-var LeafletMapCustomElement = /** @class */ (function () {
+export var LeafletMapCustomElement = /** @class */ (function () {
     function LeafletMapCustomElement(element) {
         this.isAttached = false;
         this.hasBounds = false;
@@ -129,5 +129,4 @@ var LeafletMapCustomElement = /** @class */ (function () {
     ], LeafletMapCustomElement);
     return LeafletMapCustomElement;
 }());
-export { LeafletMapCustomElement };
 //# sourceMappingURL=leaflet-map.js.map
