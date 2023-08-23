@@ -23,37 +23,40 @@ var LeafletMapCustomElement = exports.LeafletMapCustomElement = /** @class */ (f
         this.isAttached = false;
         this.hasBounds = false;
         this.options = {
-            fullscreenControl: true
+            fullscreenControl: true,
         };
         this.fitBounds = true;
         this.element = element;
     }
     LeafletMapCustomElement.prototype.bind = function () {
         // Create map here so that components that use the api can get the map in their attached() lifecycle hook
-        var mapInstance = this.map = (0, leaflet_1.map)(this.element, this.options);
+        var mapInstance = (this.map = (0, leaflet_1.map)(this.element, this.options));
         this.api = {
             getMap: function () { return mapInstance; },
-            goto: this.goto.bind(this)
+            goto: this.goto.bind(this),
         };
     };
     LeafletMapCustomElement.prototype.attached = function () {
         var _this = this;
         var map = this.map;
         if (!map) {
-            throw new Error('Element is not bound');
+            throw new Error("Element is not bound");
         }
         var baseLayers = {
-            "Kort": (0, leaflet_1.tileLayer)('//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+            Kort: (0, leaflet_1.tileLayer)("//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+                attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
             }).addTo(map),
-            "Satellit": (0, leaflet_1.tileLayer)('//server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-                attribution: '&copy; <a href="http://www.esri.com">Esri</a>'
-            })
+            Satellit: (0, leaflet_1.tileLayer)("//server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}", {
+                attribution: '&copy; <a href="http://www.esri.com">Esri</a>',
+            }),
         };
         leaflet_1.control.layers(baseLayers).addTo(map);
         if (this.markers) {
             if (this.fitBounds.toString() === "true") {
-                var latlngs = this.markers.filter(marker_custom_element_1.isMarkerCustomElement).map(function (x) { return x.getLatLng(); }).filter(function (x) { return !!x; });
+                var latlngs = this.markers
+                    .filter(marker_custom_element_1.isMarkerCustomElement)
+                    .map(function (x) { return x.getLatLng(); })
+                    .filter(function (x) { return !!x; });
                 if (latlngs.length) {
                     var bounds = (0, leaflet_1.latLngBounds)(latlngs);
                     if (bounds.isValid()) {
@@ -63,16 +66,19 @@ var LeafletMapCustomElement = exports.LeafletMapCustomElement = /** @class */ (f
                 }
             }
         }
-        map.on('areaselected', function (event) {
+        map.on("areaselected", function (event) {
             var bounds = event.bounds;
-            var selected = _this.markers.filter(marker_custom_element_1.isMarkerCustomElement).filter(function (x) { return bounds.contains(x.getLatLng()); }).map(function (x) { return x.model; });
+            var selected = _this.markers
+                .filter(marker_custom_element_1.isMarkerCustomElement)
+                .filter(function (x) { return bounds.contains(x.getLatLng()); })
+                .map(function (x) { return x.model; });
             var detail = {
                 bounds: bounds,
-                selected: selected
+                selected: selected,
             };
-            var areaSelectedEvent = aurelia_framework_1.DOM.createCustomEvent('area-selected', {
+            var areaSelectedEvent = aurelia_framework_1.DOM.createCustomEvent("area-selected", {
                 bubbles: true,
-                detail: detail
+                detail: detail,
             });
             _this.element.dispatchEvent(areaSelectedEvent);
         });
@@ -80,7 +86,7 @@ var LeafletMapCustomElement = exports.LeafletMapCustomElement = /** @class */ (f
     };
     LeafletMapCustomElement.prototype.detached = function () {
         if (!this.map) {
-            throw new Error('Element is not bound');
+            throw new Error("Element is not bound");
         }
         this.map.remove();
         delete this.map;
@@ -90,8 +96,12 @@ var LeafletMapCustomElement = exports.LeafletMapCustomElement = /** @class */ (f
     LeafletMapCustomElement.prototype.markersChanged = function () {
         if (this.map && this.isAttached) {
             if (this.fitBounds.toString() === "true") {
-                var bounds = (0, leaflet_1.latLngBounds)(this.markers.filter(marker_custom_element_1.isMarkerCustomElement).map(function (x) { return x.getLatLng(); }).filter(function (x) { return !!x; }));
-                if (bounds.isValid() && (!this.hasBounds || !this.map.getBounds().equals(bounds))) {
+                var bounds = (0, leaflet_1.latLngBounds)(this.markers
+                    .filter(marker_custom_element_1.isMarkerCustomElement)
+                    .map(function (x) { return x.getLatLng(); })
+                    .filter(function (x) { return !!x; }));
+                if (bounds.isValid() &&
+                    (!this.hasBounds || !this.map.getBounds().equals(bounds))) {
                     this.map.fitBounds(bounds);
                     this.hasBounds = true;
                 }
@@ -103,7 +113,7 @@ var LeafletMapCustomElement = exports.LeafletMapCustomElement = /** @class */ (f
             if (zoom) {
                 this.map.setView(center, zoom, {
                     animate: true,
-                    duration: 1
+                    duration: 1,
                 });
             }
             else {
@@ -124,7 +134,7 @@ var LeafletMapCustomElement = exports.LeafletMapCustomElement = /** @class */ (f
         __metadata("design:type", Object)
     ], LeafletMapCustomElement.prototype, "fitBounds", void 0);
     __decorate([
-        (0, aurelia_framework_1.children)('*'),
+        (0, aurelia_framework_1.children)("*"),
         __metadata("design:type", Array)
     ], LeafletMapCustomElement.prototype, "markers", void 0);
     LeafletMapCustomElement = __decorate([

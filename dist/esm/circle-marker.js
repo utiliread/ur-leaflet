@@ -7,11 +7,11 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-import { circleMarker, latLng } from 'leaflet';
-import { DOM, autoinject, bindable, bindingMode, noView } from 'aurelia-framework';
-import { LeafletMapCustomElement } from './leaflet-map';
-import { extend } from 'lodash-es';
-import { listen } from './utils';
+import { circleMarker, latLng, } from "leaflet";
+import { DOM, autoinject, bindable, bindingMode, noView, } from "aurelia-framework";
+import { LeafletMapCustomElement } from "./leaflet-map";
+import { extend } from "lodash-es";
+import { listen } from "./utils";
 export var CircleMarkerCustomElement = /** @class */ (function () {
     function CircleMarkerCustomElement(element, map) {
         this.element = element;
@@ -33,26 +33,26 @@ export var CircleMarkerCustomElement = /** @class */ (function () {
         var marker = this.marker;
         var map = this.map.map;
         if (!marker || !map) {
-            throw new Error('Element is not bound');
+            throw new Error("Element is not bound");
         }
         this.disposables = [
-            listen(marker, 'click', function (event) {
-                var customEvent = DOM.createCustomEvent('click', {
+            listen(marker, "click", function (event) {
+                var customEvent = DOM.createCustomEvent("click", {
                     bubbles: true,
-                    detail: _this.model
+                    detail: _this.model,
                 });
                 // Leaflet requires clientX and clientY to be present when dispatching events
                 extend(customEvent, {
                     clientX: event.originalEvent.clientX,
                     clientY: event.originalEvent.clientY,
                     ctrlKey: event.originalEvent.ctrlKey,
-                    altKey: event.originalEvent.altKey
+                    altKey: event.originalEvent.altKey,
                 });
                 _this.element.dispatchEvent(customEvent);
                 if (_this.popup) {
                     map.openPopup(_this.popup, marker.getLatLng(), _this.popupOptions);
                 }
-            })
+            }),
         ];
         if (this.delay !== undefined) {
             this.disposables.push(createTimeout(function () {
@@ -68,7 +68,7 @@ export var CircleMarkerCustomElement = /** @class */ (function () {
     };
     CircleMarkerCustomElement.prototype.detached = function () {
         if (!this.marker) {
-            throw new Error('Element is not bound');
+            throw new Error("Element is not bound");
         }
         if (this.map && this.map.map && this.isAdded) {
             this.map.map.removeLayer(this.marker);
@@ -81,7 +81,7 @@ export var CircleMarkerCustomElement = /** @class */ (function () {
     };
     CircleMarkerCustomElement.prototype.unbind = function () {
         if (!this.marker) {
-            throw new Error('Element is not bound');
+            throw new Error("Element is not bound");
         }
         this.marker.remove();
         delete this.marker;
@@ -104,20 +104,29 @@ export var CircleMarkerCustomElement = /** @class */ (function () {
     };
     CircleMarkerCustomElement.prototype.getLatLng = function () {
         if (!this.marker) {
-            throw new Error('Element is not bound');
+            throw new Error("Element is not bound");
         }
         return this.marker.getLatLng();
     };
     __decorate([
-        bindable({ defaultBindingMode: bindingMode.twoWay, changeHandler: "positionChanged" }),
+        bindable({
+            defaultBindingMode: bindingMode.twoWay,
+            changeHandler: "positionChanged",
+        }),
         __metadata("design:type", Number)
     ], CircleMarkerCustomElement.prototype, "lat", void 0);
     __decorate([
-        bindable({ defaultBindingMode: bindingMode.twoWay, changeHandler: "positionChanged" }),
+        bindable({
+            defaultBindingMode: bindingMode.twoWay,
+            changeHandler: "positionChanged",
+        }),
         __metadata("design:type", Number)
     ], CircleMarkerCustomElement.prototype, "lng", void 0);
     __decorate([
-        bindable({ defaultBindingMode: bindingMode.twoWay, changeHandler: "pointChanged" }),
+        bindable({
+            defaultBindingMode: bindingMode.twoWay,
+            changeHandler: "pointChanged",
+        }),
         __metadata("design:type", Object)
     ], CircleMarkerCustomElement.prototype, "point", void 0);
     __decorate([
@@ -143,14 +152,15 @@ export var CircleMarkerCustomElement = /** @class */ (function () {
     CircleMarkerCustomElement = __decorate([
         autoinject(),
         noView(),
-        __metadata("design:paramtypes", [Element, LeafletMapCustomElement])
+        __metadata("design:paramtypes", [Element,
+            LeafletMapCustomElement])
     ], CircleMarkerCustomElement);
     return CircleMarkerCustomElement;
 }());
 function createTimeout(handler, timeout) {
     var handle = setTimeout(handler, timeout);
     return {
-        dispose: function () { return clearTimeout(handle); }
+        dispose: function () { return clearTimeout(handle); },
     };
 }
 //# sourceMappingURL=circle-marker.js.map

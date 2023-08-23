@@ -8,18 +8,18 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 var _a, _b, _c;
-import './default-marker.css';
-import { DOM, autoinject, bindable, bindingMode, noView } from 'aurelia-framework';
-import { Icon, marker, latLng } from 'leaflet';
-import { LeafletMapCustomElement } from './leaflet-map';
-import { extend } from 'lodash-es';
-import { listen } from './utils';
+import "./default-marker.css";
+import { DOM, autoinject, bindable, bindingMode, noView, } from "aurelia-framework";
+import { Icon, marker, latLng, } from "leaflet";
+import { LeafletMapCustomElement } from "./leaflet-map";
+import { extend } from "lodash-es";
+import { listen } from "./utils";
 // https://github.com/Leaflet/Leaflet/issues/4968#issuecomment-299044745
 var defaultIconPrototype = Icon.Default.prototype;
 delete defaultIconPrototype._getIconUrl;
-var iconRetinaUrl = require('leaflet/dist/images/marker-icon-2x.png');
-var iconUrl = require('leaflet/dist/images/marker-icon.png');
-var shadowUrl = require('leaflet/dist/images/marker-shadow.png');
+var iconRetinaUrl = require("leaflet/dist/images/marker-icon-2x.png");
+var iconUrl = require("leaflet/dist/images/marker-icon.png");
+var shadowUrl = require("leaflet/dist/images/marker-shadow.png");
 Icon.Default.mergeOptions({
     iconRetinaUrl: (_a = iconRetinaUrl.default) !== null && _a !== void 0 ? _a : iconRetinaUrl,
     iconUrl: (_b = iconUrl.default) !== null && _b !== void 0 ? _b : iconUrl,
@@ -45,25 +45,25 @@ export var DefaultMarkerCustomElement = /** @class */ (function () {
         var marker = this.marker;
         var map = this.map.map;
         if (!marker || !map) {
-            throw new Error('Element is not bound');
+            throw new Error("Element is not bound");
         }
         map.addLayer(marker);
         this.disposables = [
-            listen(marker, 'click', function (event) {
-                var customEvent = DOM.createCustomEvent('click', {
+            listen(marker, "click", function (event) {
+                var customEvent = DOM.createCustomEvent("click", {
                     bubbles: true,
-                    detail: _this.model
+                    detail: _this.model,
                 });
                 // Leaflet requires clientX and clientY to be present when dispatching events
                 extend(customEvent, {
                     clientX: event.originalEvent.clientX,
                     clientY: event.originalEvent.clientY,
                     ctrlKey: event.originalEvent.ctrlKey,
-                    altKey: event.originalEvent.altKey
+                    altKey: event.originalEvent.altKey,
                 });
                 _this.element.dispatchEvent(customEvent);
             }),
-            listen(marker, 'drag', function (event) {
+            listen(marker, "drag", function (event) {
                 if (_this.options && _this.options.draggable) {
                     var position = event.latlng;
                     _this.lat = position.lat;
@@ -73,13 +73,13 @@ export var DefaultMarkerCustomElement = /** @class */ (function () {
                         coordinates: [_this.lng, _this.lat],
                     };
                 }
-            })
+            }),
         ];
         this.isAttached = true;
     };
     DefaultMarkerCustomElement.prototype.detached = function () {
         if (!this.marker) {
-            throw new Error('Element is not bound');
+            throw new Error("Element is not bound");
         }
         if (this.map && this.map.map) {
             this.map.map.removeLayer(this.marker);
@@ -92,7 +92,7 @@ export var DefaultMarkerCustomElement = /** @class */ (function () {
     };
     DefaultMarkerCustomElement.prototype.unbind = function () {
         if (!this.marker) {
-            throw new Error('Element is not bound');
+            throw new Error("Element is not bound");
         }
         this.marker.remove();
         delete this.marker;
@@ -109,7 +109,10 @@ export var DefaultMarkerCustomElement = /** @class */ (function () {
         }
     };
     DefaultMarkerCustomElement.prototype.optionsChanged = function () {
-        if (this.marker && this.isAttached && this.marker.dragging && this.options) {
+        if (this.marker &&
+            this.isAttached &&
+            this.marker.dragging &&
+            this.options) {
             if (this.options.draggable) {
                 this.marker.dragging.enable();
             }
@@ -120,20 +123,29 @@ export var DefaultMarkerCustomElement = /** @class */ (function () {
     };
     DefaultMarkerCustomElement.prototype.getLatLng = function () {
         if (!this.marker) {
-            throw new Error('Element is not bound');
+            throw new Error("Element is not bound");
         }
         return this.marker.getLatLng();
     };
     __decorate([
-        bindable({ defaultBindingMode: bindingMode.twoWay, changeHandler: "positionChanged" }),
+        bindable({
+            defaultBindingMode: bindingMode.twoWay,
+            changeHandler: "positionChanged",
+        }),
         __metadata("design:type", Number)
     ], DefaultMarkerCustomElement.prototype, "lat", void 0);
     __decorate([
-        bindable({ defaultBindingMode: bindingMode.twoWay, changeHandler: "positionChanged" }),
+        bindable({
+            defaultBindingMode: bindingMode.twoWay,
+            changeHandler: "positionChanged",
+        }),
         __metadata("design:type", Number)
     ], DefaultMarkerCustomElement.prototype, "lng", void 0);
     __decorate([
-        bindable({ defaultBindingMode: bindingMode.twoWay, changeHandler: "pointChanged" }),
+        bindable({
+            defaultBindingMode: bindingMode.twoWay,
+            changeHandler: "pointChanged",
+        }),
         __metadata("design:type", Object)
     ], DefaultMarkerCustomElement.prototype, "point", void 0);
     __decorate([
@@ -147,7 +159,8 @@ export var DefaultMarkerCustomElement = /** @class */ (function () {
     DefaultMarkerCustomElement = __decorate([
         autoinject(),
         noView(),
-        __metadata("design:paramtypes", [Element, LeafletMapCustomElement])
+        __metadata("design:paramtypes", [Element,
+            LeafletMapCustomElement])
     ], DefaultMarkerCustomElement);
     return DefaultMarkerCustomElement;
 }());

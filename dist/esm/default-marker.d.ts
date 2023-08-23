@@ -1,7 +1,7 @@
-import './default-marker.css';
-import { MarkerOptions } from 'leaflet';
-import { IMarkerCustomElement } from './marker-custom-element';
-import { LeafletMapCustomElement } from './leaflet-map';
+import "./default-marker.css";
+import { MarkerOptions } from "leaflet";
+import { IMarkerCustomElement } from "./marker-custom-element";
+import { LeafletMapCustomElement } from "./leaflet-map";
 export declare class DefaultMarkerCustomElement implements IMarkerCustomElement {
     private element;
     private map;

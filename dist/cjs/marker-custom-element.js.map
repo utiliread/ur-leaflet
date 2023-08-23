@@ -1,1 +1,1 @@
-{"version":3,"file":"marker-custom-element.js","sourceRoot":"","sources":["../../src/marker-custom-element.ts"],"names":[],"mappings":";;;AAOA,SAAgB,qBAAqB,CAAC,CAAM;IACxC,OAAO,CAAA,CAAC,aAAD,CAAC,uBAAD,CAAC,CAAE,SAAS,KAAI,OAAO,CAAC,CAAC,SAAS,KAAK,UAAU,CAAC;AAC7D,CAAC;AAFD,sDAEC"}
+{"version":3,"file":"marker-custom-element.js","sourceRoot":"","sources":["../../src/marker-custom-element.ts"],"names":[],"mappings":";;;AAOA,SAAgB,qBAAqB,CAAC,CAAM;IAC1C,OAAO,CAAA,CAAC,aAAD,CAAC,uBAAD,CAAC,CAAE,SAAS,KAAI,OAAO,CAAC,CAAC,SAAS,KAAK,UAAU,CAAC;AAC3D,CAAC;AAFD,sDAEC"}
