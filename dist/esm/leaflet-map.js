@@ -14,6 +14,7 @@ import 'leaflet-fullscreen/dist/leaflet.fullscreen.css';
 import './leaflet-map.css';
 import { DOM, autoinject, bindable, bindingMode, children } from 'aurelia-framework';
 import { control, latLngBounds, map, tileLayer } from 'leaflet';
+import { isMarkerCustomElement } from './marker-custom-element';
 export var LeafletMapCustomElement = /** @class */ (function () {
     function LeafletMapCustomElement(element) {
         this.isAttached = false;
@@ -49,7 +50,7 @@ export var LeafletMapCustomElement = /** @class */ (function () {
         control.layers(baseLayers).addTo(map);
         if (this.markers) {
             if (this.fitBounds.toString() === "true") {
-                var latlngs = this.markers.map(function (x) { return x.getLatLng(); }).filter(function (x) { return !!x; });
+                var latlngs = this.markers.filter(isMarkerCustomElement).map(function (x) { return x.getLatLng(); }).filter(function (x) { return !!x; });
                 if (latlngs.length) {
                     var bounds = latLngBounds(latlngs);
                     if (bounds.isValid()) {
@@ -61,7 +62,7 @@ export var LeafletMapCustomElement = /** @class */ (function () {
         }
         map.on('areaselected', function (event) {
             var bounds = event.bounds;
-            var selected = _this.markers.filter(function (x) { return bounds.contains(x.getLatLng()); }).map(function (x) { return x.model; });
+            var selected = _this.markers.filter(isMarkerCustomElement).filter(function (x) { return bounds.contains(x.getLatLng()); }).map(function (x) { return x.model; });
             var detail = {
                 bounds: bounds,
                 selected: selected
@@ -86,7 +87,7 @@ export var LeafletMapCustomElement = /** @class */ (function () {
     LeafletMapCustomElement.prototype.markersChanged = function () {
         if (this.map && this.isAttached) {
             if (this.fitBounds.toString() === "true") {
-                var bounds = latLngBounds(this.markers.map(function (x) { return x.getLatLng(); }).filter(function (x) { return !!x; }));
+                var bounds = latLngBounds(this.markers.filter(isMarkerCustomElement).map(function (x) { return x.getLatLng(); }).filter(function (x) { return !!x; }));
                 if (bounds.isValid() && (!this.hasBounds || !this.map.getBounds().equals(bounds))) {
                     this.map.fitBounds(bounds);
                     this.hasBounds = true;

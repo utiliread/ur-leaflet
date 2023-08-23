@@ -14,7 +14,7 @@ export declare class LeafletMapCustomElement {
     options: MapOptions;
     api?: LeafletApi;
     fitBounds: boolean | "true" | "false";
-    markers: IMarkerCustomElement[];
+    markers: (unknown | IMarkerCustomElement)[];
     map?: Map;
     constructor(element: Element);
     bind(): void;

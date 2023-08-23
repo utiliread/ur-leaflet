@@ -17,6 +17,7 @@ require("leaflet-fullscreen/dist/leaflet.fullscreen.css");
 require("./leaflet-map.css");
 var aurelia_framework_1 = require("aurelia-framework");
 var leaflet_1 = require("leaflet");
+var marker_custom_element_1 = require("./marker-custom-element");
 var LeafletMapCustomElement = exports.LeafletMapCustomElement = /** @class */ (function () {
     function LeafletMapCustomElement(element) {
         this.isAttached = false;
@@ -52,7 +53,7 @@ var LeafletMapCustomElement = exports.LeafletMapCustomElement = /** @class */ (f
         leaflet_1.control.layers(baseLayers).addTo(map);
         if (this.markers) {
             if (this.fitBounds.toString() === "true") {
-                var latlngs = this.markers.map(function (x) { return x.getLatLng(); }).filter(function (x) { return !!x; });
+                var latlngs = this.markers.filter(marker_custom_element_1.isMarkerCustomElement).map(function (x) { return x.getLatLng(); }).filter(function (x) { return !!x; });
                 if (latlngs.length) {
                     var bounds = (0, leaflet_1.latLngBounds)(latlngs);
                     if (bounds.isValid()) {
@@ -64,7 +65,7 @@ var LeafletMapCustomElement = exports.LeafletMapCustomElement = /** @class */ (f
         }
         map.on('areaselected', function (event) {
             var bounds = event.bounds;
-            var selected = _this.markers.filter(function (x) { return bounds.contains(x.getLatLng()); }).map(function (x) { return x.model; });
+            var selected = _this.markers.filter(marker_custom_element_1.isMarkerCustomElement).filter(function (x) { return bounds.contains(x.getLatLng()); }).map(function (x) { return x.model; });
             var detail = {
                 bounds: bounds,
                 selected: selected
@@ -89,7 +90,7 @@ var LeafletMapCustomElement = exports.LeafletMapCustomElement = /** @class */ (f
     LeafletMapCustomElement.prototype.markersChanged = function () {
         if (this.map && this.isAttached) {
             if (this.fitBounds.toString() === "true") {
-                var bounds = (0, leaflet_1.latLngBounds)(this.markers.map(function (x) { return x.getLatLng(); }).filter(function (x) { return !!x; }));
+                var bounds = (0, leaflet_1.latLngBounds)(this.markers.filter(marker_custom_element_1.isMarkerCustomElement).map(function (x) { return x.getLatLng(); }).filter(function (x) { return !!x; }));
                 if (bounds.isValid() && (!this.hasBounds || !this.map.getBounds().equals(bounds))) {
                     this.map.fitBounds(bounds);
                     this.hasBounds = true;

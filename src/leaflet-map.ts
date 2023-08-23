@@ -8,7 +8,7 @@ import { DOM, autoinject, bindable, bindingMode, children } from 'aurelia-framew
 import { LatLngBounds, Map, MapOptions, control, latLngBounds, map, tileLayer } from 'leaflet';
 
 import { AreaSelectedEventDetail } from './area-selected-event';
-import { IMarkerCustomElement } from './marker-custom-element';
+import { IMarkerCustomElement, isMarkerCustomElement } from './marker-custom-element';
 import { LatLng } from 'leaflet';
 import { LeafletApi } from './leaflet-api';
 
@@ -31,7 +31,7 @@ export class LeafletMapCustomElement {
     fitBounds: boolean | "true" | "false" = true;
 
     @children('*')
-    markers!: IMarkerCustomElement[];
+    markers!: (unknown | IMarkerCustomElement)[];
 
     map?: Map;
 
@@ -67,7 +67,7 @@ export class LeafletMapCustomElement {
 
         if (this.markers) {
             if (this.fitBounds.toString() === "true") {
-                const latlngs = this.markers.map(x => x.getLatLng()).filter(x => !!x);
+                const latlngs = this.markers.filter(isMarkerCustomElement).map(x => x.getLatLng()).filter(x => !!x);
                 if (latlngs.length) {
                     const bounds = latLngBounds(latlngs);
 
@@ -81,7 +81,7 @@ export class LeafletMapCustomElement {
 
         map.on('areaselected', event => {
             const bounds = (<any>event).bounds as LatLngBounds;
-            const selected = this.markers.filter(x => bounds.contains(x.getLatLng())).map(x => x.model);
+            const selected = this.markers.filter(isMarkerCustomElement).filter(x => bounds.contains(x.getLatLng())).map(x => x.model);
 
             const detail: AreaSelectedEventDetail = {
                 bounds: bounds,
@@ -113,7 +113,7 @@ export class LeafletMapCustomElement {
     markersChanged() {
         if (this.map && this.isAttached) {
             if (this.fitBounds.toString() === "true") {
-                const bounds = latLngBounds(this.markers.map(x => x.getLatLng()).filter(x => !!x));
+                const bounds = latLngBounds(this.markers.filter(isMarkerCustomElement).map(x => x.getLatLng()).filter(x => !!x));
 
                 if (bounds.isValid() && (!this.hasBounds || !this.map.getBounds().equals(bounds))) {
                     this.map.fitBounds(bounds);
