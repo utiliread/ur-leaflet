@@ -105,8 +105,7 @@ export class LeafletMapCustomElement {
 
     map.on("areaselected", (event) => {
       const bounds = (<any>event).bounds as LatLngBounds;
-      const selected = this.markers
-        .filter(isMarkerCustomElement)
+      const selected = this.getMarkers()
         .filter((x) => bounds.contains(x.getLatLng()))
         .map((x) => x.model);
 
@@ -141,8 +140,7 @@ export class LeafletMapCustomElement {
     if (this.map && this.isAttached) {
       if (this.fitBounds.toString() === "true") {
         const bounds = latLngBounds(
-          this.markers
-            .filter(isMarkerCustomElement)
+          this.getMarkers()
             .map((x) => x.getLatLng())
             .filter((x) => !!x),
         );
@@ -156,6 +154,10 @@ export class LeafletMapCustomElement {
         }
       }
     }
+  }
+
+  getMarkers() {
+    return this.markers.filter(isMarkerCustomElement);
   }
 
   goto(center: LatLng, zoom?: number) {
