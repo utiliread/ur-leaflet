@@ -21,5 +21,6 @@ export declare class LeafletMapCustomElement {
     attached(): void;
     detached(): void;
     markersChanged(): void;
+    getMarkers(): IMarkerCustomElement[];
     goto(center: LatLng, zoom?: number): void;
 }

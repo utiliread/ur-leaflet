@@ -15,7 +15,7 @@ var aurelia_framework_1 = require("aurelia-framework");
 var leaflet_map_1 = require("./leaflet-map");
 var lodash_es_1 = require("lodash-es");
 var utils_1 = require("./utils");
-var CircleMarkerCustomElement = exports.CircleMarkerCustomElement = /** @class */ (function () {
+var CircleMarkerCustomElement = /** @class */ (function () {
     function CircleMarkerCustomElement(element, map) {
         this.element = element;
         this.map = map;
@@ -160,6 +160,7 @@ var CircleMarkerCustomElement = exports.CircleMarkerCustomElement = /** @class *
     ], CircleMarkerCustomElement);
     return CircleMarkerCustomElement;
 }());
+exports.CircleMarkerCustomElement = CircleMarkerCustomElement;
 function createTimeout(handler, timeout) {
     var handle = setTimeout(handler, timeout);
     return {

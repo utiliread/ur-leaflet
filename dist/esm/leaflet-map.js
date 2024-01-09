@@ -15,7 +15,7 @@ import "./leaflet-map.css";
 import { DOM, autoinject, bindable, bindingMode, children, } from "aurelia-framework";
 import { control, latLngBounds, map, tileLayer, } from "leaflet";
 import { isMarkerCustomElement, } from "./marker-custom-element";
-export var LeafletMapCustomElement = /** @class */ (function () {
+var LeafletMapCustomElement = /** @class */ (function () {
     function LeafletMapCustomElement(element) {
         this.isAttached = false;
         this.hasBounds = false;
@@ -65,8 +65,7 @@ export var LeafletMapCustomElement = /** @class */ (function () {
         }
         map.on("areaselected", function (event) {
             var bounds = event.bounds;
-            var selected = _this.markers
-                .filter(isMarkerCustomElement)
+            var selected = _this.getMarkers()
                 .filter(function (x) { return bounds.contains(x.getLatLng()); })
                 .map(function (x) { return x.model; });
             var detail = {
@@ -93,8 +92,7 @@ export var LeafletMapCustomElement = /** @class */ (function () {
     LeafletMapCustomElement.prototype.markersChanged = function () {
         if (this.map && this.isAttached) {
             if (this.fitBounds.toString() === "true") {
-                var bounds = latLngBounds(this.markers
-                    .filter(isMarkerCustomElement)
+                var bounds = latLngBounds(this.getMarkers()
                     .map(function (x) { return x.getLatLng(); })
                     .filter(function (x) { return !!x; }));
                 if (bounds.isValid() &&
@@ -104,6 +102,9 @@ export var LeafletMapCustomElement = /** @class */ (function () {
                 }
             }
         }
+    };
+    LeafletMapCustomElement.prototype.getMarkers = function () {
+        return this.markers.filter(isMarkerCustomElement);
     };
     LeafletMapCustomElement.prototype.goto = function (center, zoom) {
         if (this.map) {
@@ -140,4 +141,5 @@ export var LeafletMapCustomElement = /** @class */ (function () {
     ], LeafletMapCustomElement);
     return LeafletMapCustomElement;
 }());
+export { LeafletMapCustomElement };
 //# sourceMappingURL=leaflet-map.js.map

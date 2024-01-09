@@ -18,7 +18,7 @@ require("./leaflet-map.css");
 var aurelia_framework_1 = require("aurelia-framework");
 var leaflet_1 = require("leaflet");
 var marker_custom_element_1 = require("./marker-custom-element");
-var LeafletMapCustomElement = exports.LeafletMapCustomElement = /** @class */ (function () {
+var LeafletMapCustomElement = /** @class */ (function () {
     function LeafletMapCustomElement(element) {
         this.isAttached = false;
         this.hasBounds = false;
@@ -68,8 +68,7 @@ var LeafletMapCustomElement = exports.LeafletMapCustomElement = /** @class */ (f
         }
         map.on("areaselected", function (event) {
             var bounds = event.bounds;
-            var selected = _this.markers
-                .filter(marker_custom_element_1.isMarkerCustomElement)
+            var selected = _this.getMarkers()
                 .filter(function (x) { return bounds.contains(x.getLatLng()); })
                 .map(function (x) { return x.model; });
             var detail = {
@@ -96,8 +95,7 @@ var LeafletMapCustomElement = exports.LeafletMapCustomElement = /** @class */ (f
     LeafletMapCustomElement.prototype.markersChanged = function () {
         if (this.map && this.isAttached) {
             if (this.fitBounds.toString() === "true") {
-                var bounds = (0, leaflet_1.latLngBounds)(this.markers
-                    .filter(marker_custom_element_1.isMarkerCustomElement)
+                var bounds = (0, leaflet_1.latLngBounds)(this.getMarkers()
                     .map(function (x) { return x.getLatLng(); })
                     .filter(function (x) { return !!x; }));
                 if (bounds.isValid() &&
@@ -107,6 +105,9 @@ var LeafletMapCustomElement = exports.LeafletMapCustomElement = /** @class */ (f
                 }
             }
         }
+    };
+    LeafletMapCustomElement.prototype.getMarkers = function () {
+        return this.markers.filter(marker_custom_element_1.isMarkerCustomElement);
     };
     LeafletMapCustomElement.prototype.goto = function (center, zoom) {
         if (this.map) {
@@ -143,4 +144,5 @@ var LeafletMapCustomElement = exports.LeafletMapCustomElement = /** @class */ (f
     ], LeafletMapCustomElement);
     return LeafletMapCustomElement;
 }());
+exports.LeafletMapCustomElement = LeafletMapCustomElement;
 //# sourceMappingURL=leaflet-map.js.map
