@@ -24,5 +24,6 @@ export declare class CircleMarkerCustomElement implements IMarkerCustomElement {
     pointChanged(): void;
     positionChanged(): void;
     optionsChanged(): void;
+    toGeoJSON(precision?: number | false | undefined): import("geojson").Feature<import("geojson").Point, any>;
     getLatLng(): import("leaflet").LatLng;
 }

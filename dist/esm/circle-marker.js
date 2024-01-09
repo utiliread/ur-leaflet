@@ -102,6 +102,12 @@ var CircleMarkerCustomElement = /** @class */ (function () {
             this.marker.setStyle(this.options);
         }
     };
+    CircleMarkerCustomElement.prototype.toGeoJSON = function (precision) {
+        if (!this.marker) {
+            throw new Error("Element is not bound");
+        }
+        return this.marker.toGeoJSON(precision);
+    };
     CircleMarkerCustomElement.prototype.getLatLng = function () {
         if (!this.marker) {
             throw new Error("Element is not bound");

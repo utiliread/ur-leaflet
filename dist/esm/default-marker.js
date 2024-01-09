@@ -10,7 +10,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var _a, _b, _c;
 import "./default-marker.css";
 import { DOM, autoinject, bindable, bindingMode, noView, } from "aurelia-framework";
-import { Icon, marker, latLng, } from "leaflet";
+import { Icon, latLng, marker, } from "leaflet";
 import { LeafletMapCustomElement } from "./leaflet-map";
 import { extend } from "lodash-es";
 import { listen } from "./utils";
@@ -120,6 +120,12 @@ var DefaultMarkerCustomElement = /** @class */ (function () {
                 this.marker.dragging.disable();
             }
         }
+    };
+    DefaultMarkerCustomElement.prototype.toGeoJSON = function (precision) {
+        if (!this.marker) {
+            throw new Error("Element is not bound");
+        }
+        return this.marker.toGeoJSON(precision);
     };
     DefaultMarkerCustomElement.prototype.getLatLng = function () {
         if (!this.marker) {

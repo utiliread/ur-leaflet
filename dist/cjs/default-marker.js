@@ -124,6 +124,12 @@ var DefaultMarkerCustomElement = /** @class */ (function () {
             }
         }
     };
+    DefaultMarkerCustomElement.prototype.toGeoJSON = function (precision) {
+        if (!this.marker) {
+            throw new Error("Element is not bound");
+        }
+        return this.marker.toGeoJSON(precision);
+    };
     DefaultMarkerCustomElement.prototype.getLatLng = function () {
         if (!this.marker) {
             throw new Error("Element is not bound");

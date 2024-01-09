@@ -2,8 +2,8 @@ import {
   CircleMarker,
   CircleMarkerOptions,
   LeafletMouseEvent,
-  circleMarker,
   PopupOptions,
+  circleMarker,
   latLng,
 } from "leaflet";
 import {
@@ -161,6 +161,13 @@ export class CircleMarkerCustomElement implements IMarkerCustomElement {
     if (this.marker && this.isAttached && this.options) {
       this.marker.setStyle(this.options);
     }
+  }
+
+  toGeoJSON(precision?: number | false | undefined) {
+    if (!this.marker) {
+      throw new Error("Element is not bound");
+    }
+    return this.marker.toGeoJSON(precision);
   }
 
   getLatLng() {

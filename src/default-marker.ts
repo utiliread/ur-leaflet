@@ -13,8 +13,8 @@ import {
   LeafletMouseEvent,
   Marker,
   MarkerOptions,
-  marker,
   latLng,
+  marker,
 } from "leaflet";
 
 import { IMarkerCustomElement } from "./marker-custom-element";
@@ -171,6 +171,13 @@ export class DefaultMarkerCustomElement implements IMarkerCustomElement {
         this.marker.dragging.disable();
       }
     }
+  }
+
+  toGeoJSON(precision?: number | false | undefined) {
+    if (!this.marker) {
+      throw new Error("Element is not bound");
+    }
+    return this.marker.toGeoJSON(precision);
   }
 
   getLatLng() {
