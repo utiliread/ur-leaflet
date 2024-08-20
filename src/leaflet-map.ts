@@ -103,7 +103,7 @@ export class LeafletMapCustomElement {
       }
     }
 
-    map.on("areaselected", (event) => {
+    map.on("selectarea:selected", (event) => {
       const bounds = (<any>event).bounds as LatLngBounds;
       const selected = this.getMarkers()
         .filter((x) => bounds.contains(x.getLatLng()))

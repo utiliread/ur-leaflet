@@ -66,7 +66,7 @@ var LeafletMapCustomElement = /** @class */ (function () {
                 }
             }
         }
-        map.on("areaselected", function (event) {
+        map.on("selectarea:selected", function (event) {
             var bounds = event.bounds;
             var selected = _this.getMarkers()
                 .filter(function (x) { return bounds.contains(x.getLatLng()); })

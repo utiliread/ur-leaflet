@@ -7,5 +7,5 @@ export function configure(frameworkConfiguration) {
         PLATFORM.moduleName("./default-marker"),
     ]);
 }
-export { LeafletMapCustomElement };
+export { LeafletMapCustomElement, };
 //# sourceMappingURL=index.js.map

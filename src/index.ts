@@ -14,4 +14,10 @@ export function configure(frameworkConfiguration: FrameworkConfiguration) {
   ]);
 }
 
-export { MarkerClickEvent, AreaSelectedEvent, LeafletApi, LeafletMapCustomElement, IMarkerCustomElement };
+export {
+  MarkerClickEvent,
+  AreaSelectedEvent,
+  LeafletApi,
+  LeafletMapCustomElement,
+  IMarkerCustomElement,
+};

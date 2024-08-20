@@ -5,4 +5,4 @@ import { LeafletApi } from "./leaflet-api";
 import { LeafletMapCustomElement } from "./leaflet-map";
 import { MarkerClickEvent } from "./marker-click-event";
 export declare function configure(frameworkConfiguration: FrameworkConfiguration): void;
-export { MarkerClickEvent, AreaSelectedEvent, LeafletApi, LeafletMapCustomElement, IMarkerCustomElement };
+export { MarkerClickEvent, AreaSelectedEvent, LeafletApi, LeafletMapCustomElement, IMarkerCustomElement, };
