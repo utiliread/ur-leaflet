@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.LeafletMapCustomElement = exports.configure = void 0;
+exports.LeafletMapCustomElement = void 0;
+exports.configure = configure;
 var aurelia_framework_1 = require("aurelia-framework");
 var leaflet_map_1 = require("./leaflet-map");
 Object.defineProperty(exports, "LeafletMapCustomElement", { enumerable: true, get: function () { return leaflet_map_1.LeafletMapCustomElement; } });
@@ -11,5 +12,4 @@ function configure(frameworkConfiguration) {
         aurelia_framework_1.PLATFORM.moduleName("./default-marker"),
     ]);
 }
-exports.configure = configure;
 //# sourceMappingURL=index.js.map
