@@ -10,6 +10,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CircleMarkerCustomElement = void 0;
+require("./circle-marker.css");
 var leaflet_1 = require("leaflet");
 var aurelia_framework_1 = require("aurelia-framework");
 var leaflet_map_1 = require("./leaflet-map");
@@ -57,15 +58,27 @@ var CircleMarkerCustomElement = /** @class */ (function () {
                 }
             }),
         ];
+        var addMarker = function () {
+            var _a;
+            map.addLayer(marker);
+            if (_this.text || _this.tooltipOptions) {
+                _this.tooltip = (0, leaflet_1.tooltip)((_a = _this.tooltipOptions) !== null && _a !== void 0 ? _a : {
+                    permanent: true,
+                    direction: "center",
+                    className: "marker-text",
+                });
+                if (_this.text) {
+                    _this.tooltip.setContent(_this.text);
+                }
+                _this.tooltip.setLatLng([_this.lat, _this.lng]).addTo(map);
+            }
+            _this.isAdded = true;
+        };
         if (this.delay !== undefined) {
-            this.disposables.push(createTimeout(function () {
-                map.addLayer(marker);
-                _this.isAdded = true;
-            }, Number(this.delay)));
+            this.disposables.push(createTimeout(addMarker, Number(this.delay)));
         }
         else {
-            map.addLayer(marker);
-            this.isAdded = true;
+            addMarker();
         }
         this.isAttached = true;
     };
@@ -83,11 +96,14 @@ var CircleMarkerCustomElement = /** @class */ (function () {
         this.isAttached = false;
     };
     CircleMarkerCustomElement.prototype.unbind = function () {
+        var _a;
         if (!this.marker) {
             throw new Error("Element is not bound");
         }
         this.marker.remove();
         delete this.marker;
+        (_a = this.tooltip) === null || _a === void 0 ? void 0 : _a.remove();
+        delete this.tooltip;
     };
     CircleMarkerCustomElement.prototype.pointChanged = function () {
         if (this.point) {
@@ -96,14 +112,50 @@ var CircleMarkerCustomElement = /** @class */ (function () {
         }
     };
     CircleMarkerCustomElement.prototype.positionChanged = function () {
+        var _a;
         if (this.marker && this.isAttached) {
-            this.marker.setLatLng((0, leaflet_1.latLng)(this.lat, this.lng));
+            var pos = (0, leaflet_1.latLng)(this.lat, this.lng);
+            this.marker.setLatLng(pos);
+            (_a = this.tooltip) === null || _a === void 0 ? void 0 : _a.setLatLng(pos);
         }
     };
     CircleMarkerCustomElement.prototype.optionsChanged = function () {
         if (this.marker && this.isAttached && this.options) {
             this.marker.setStyle(this.options);
         }
+    };
+    CircleMarkerCustomElement.prototype.textChanged = function () {
+        var _a;
+        if (!this.isAttached) {
+            return;
+        }
+        if (this.text) {
+            if (this.tooltip) {
+                this.tooltip.setContent(this.text);
+            }
+            else {
+                this.tooltip = (0, leaflet_1.tooltip)((_a = this.tooltipOptions) !== null && _a !== void 0 ? _a : {
+                    permanent: true,
+                    direction: "center",
+                    className: "marker-text",
+                })
+                    .setContent(this.text)
+                    .setLatLng([this.lat, this.lng])
+                    .addTo(this.map.map);
+            }
+        }
+        else if (this.tooltip) {
+            this.tooltip.remove();
+            delete this.tooltip;
+        }
+    };
+    CircleMarkerCustomElement.prototype.tooltipOptionsChanged = function () {
+        var _a, _b;
+        if (!this.isAttached || !this.tooltip) {
+            return;
+        }
+        this.tooltip.options.content = (_a = this.tooltipOptions) === null || _a === void 0 ? void 0 : _a.content;
+        this.tooltip.options.className = (_b = this.tooltipOptions) === null || _b === void 0 ? void 0 : _b.className;
     };
     CircleMarkerCustomElement.prototype.toGeoJSON = function (precision) {
         if (!this.marker) {
@@ -156,8 +208,16 @@ var CircleMarkerCustomElement = /** @class */ (function () {
     ], CircleMarkerCustomElement.prototype, "popup", void 0);
     __decorate([
         (0, aurelia_framework_1.bindable)(),
+        __metadata("design:type", String)
+    ], CircleMarkerCustomElement.prototype, "text", void 0);
+    __decorate([
+        (0, aurelia_framework_1.bindable)(),
         __metadata("design:type", Object)
     ], CircleMarkerCustomElement.prototype, "popupOptions", void 0);
+    __decorate([
+        (0, aurelia_framework_1.bindable)(),
+        __metadata("design:type", Object)
+    ], CircleMarkerCustomElement.prototype, "tooltipOptions", void 0);
     CircleMarkerCustomElement = __decorate([
         (0, aurelia_framework_1.autoinject)(),
         (0, aurelia_framework_1.noView)(),
@@ -169,8 +229,6 @@ var CircleMarkerCustomElement = /** @class */ (function () {
 exports.CircleMarkerCustomElement = CircleMarkerCustomElement;
 function createTimeout(handler, timeout) {
     var handle = setTimeout(handler, timeout);
-    return {
-        dispose: function () { return clearTimeout(handle); },
-    };
+    return { dispose: function () { return clearTimeout(handle); } };
 }
 //# sourceMappingURL=circle-marker.js.map

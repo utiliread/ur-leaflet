@@ -1,0 +1,5 @@
+.leaflet-tooltip-pane .marker-text {
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+}

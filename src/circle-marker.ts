@@ -1,10 +1,15 @@
+import "./circle-marker.css";
+
 import {
   CircleMarker,
   CircleMarkerOptions,
   LeafletMouseEvent,
   PopupOptions,
+  Tooltip,
+  TooltipOptions,
   circleMarker,
   latLng,
+  tooltip,
 } from "leaflet";
 import {
   DOM,
@@ -24,6 +29,7 @@ import { listen } from "./utils";
 @noView()
 export class CircleMarkerCustomElement implements IMarkerCustomElement {
   private marker?: CircleMarker;
+  private tooltip?: Tooltip;
   private disposables!: Disposable[];
   private isAttached = false;
   private isAdded = false;
@@ -59,11 +65,17 @@ export class CircleMarkerCustomElement implements IMarkerCustomElement {
   popup?: string;
 
   @bindable()
+  text?: string;
+
+  @bindable()
   popupOptions?: PopupOptions;
+
+  @bindable()
+  tooltipOptions?: TooltipOptions;
 
   constructor(
     private element: Element,
-    private map: LeafletMapCustomElement,
+    private map: LeafletMapCustomElement
   ) {}
 
   bind() {
@@ -104,16 +116,30 @@ export class CircleMarkerCustomElement implements IMarkerCustomElement {
       }),
     ];
 
-    if (this.delay !== undefined) {
-      this.disposables.push(
-        createTimeout(() => {
-          map.addLayer(marker);
-          this.isAdded = true;
-        }, Number(this.delay)),
-      );
-    } else {
+    const addMarker = () => {
       map.addLayer(marker);
+      if (this.text || this.tooltipOptions) {
+        this.tooltip = tooltip(
+          this.tooltipOptions ?? {
+            permanent: true,
+            direction: "center",
+            className: "marker-text",
+          }
+        );
+
+        if (this.text) {
+          this.tooltip.setContent(this.text);
+        }
+
+        this.tooltip.setLatLng([this.lat, this.lng]).addTo(map);
+      }
       this.isAdded = true;
+    };
+
+    if (this.delay !== undefined) {
+      this.disposables.push(createTimeout(addMarker, Number(this.delay)));
+    } else {
+      addMarker();
     }
 
     this.isAttached = true;
@@ -142,6 +168,9 @@ export class CircleMarkerCustomElement implements IMarkerCustomElement {
 
     this.marker.remove();
     delete this.marker;
+
+    this.tooltip?.remove();
+    delete this.tooltip;
   }
 
   pointChanged() {
@@ -153,7 +182,9 @@ export class CircleMarkerCustomElement implements IMarkerCustomElement {
 
   positionChanged() {
     if (this.marker && this.isAttached) {
-      this.marker.setLatLng(latLng(this.lat, this.lng));
+      const pos = latLng(this.lat, this.lng);
+      this.marker.setLatLng(pos);
+      this.tooltip?.setLatLng(pos);
     }
   }
 
@@ -161,6 +192,39 @@ export class CircleMarkerCustomElement implements IMarkerCustomElement {
     if (this.marker && this.isAttached && this.options) {
       this.marker.setStyle(this.options);
     }
+  }
+
+  textChanged() {
+    if (!this.isAttached) {
+      return;
+    }
+    if (this.text) {
+      if (this.tooltip) {
+        this.tooltip.setContent(this.text);
+      } else {
+        this.tooltip = tooltip(
+          this.tooltipOptions ?? {
+            permanent: true,
+            direction: "center",
+            className: "marker-text",
+          }
+        )
+          .setContent(this.text)
+          .setLatLng([this.lat, this.lng])
+          .addTo(this.map.map!);
+      }
+    } else if (this.tooltip) {
+      this.tooltip.remove();
+      delete this.tooltip;
+    }
+  }
+
+  tooltipOptionsChanged() {
+    if (!this.isAttached || !this.tooltip) {
+      return;
+    }
+    this.tooltip.options.content = this.tooltipOptions?.content;
+    this.tooltip.options.className = this.tooltipOptions?.className;
   }
 
   toGeoJSON(precision?: number | false | undefined) {
@@ -181,7 +245,5 @@ export class CircleMarkerCustomElement implements IMarkerCustomElement {
 function createTimeout(handler: Function, timeout: number): Disposable {
   const handle = setTimeout(handler, timeout);
 
-  return {
-    dispose: () => clearTimeout(handle),
-  };
+  return { dispose: () => clearTimeout(handle) };
 }
