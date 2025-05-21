@@ -1,15 +1,19 @@
-import "./default-marker.css";
-
 import {
   DOM,
   Disposable,
-  autoinject,
   bindable,
   bindingMode,
-  noView,
+  inject,
+  view,
 } from "aurelia-framework";
 import {
+  ILeafletCustomElement,
+  ILeafletElement,
+  ILeafetMarkerCustomElement,
+} from "./element";
+import {
   Icon,
+  Layer,
   LeafletMouseEvent,
   Marker,
   MarkerOptions,
@@ -17,8 +21,6 @@ import {
   marker,
 } from "leaflet";
 
-import { IMarkerCustomElement } from "./marker-custom-element";
-import { LeafletMapCustomElement } from "./leaflet-map";
 import { extend } from "lodash-es";
 import { listen } from "./utils";
 
@@ -34,12 +36,11 @@ Icon.Default.mergeOptions({
   shadowUrl: shadowUrl.default ?? shadowUrl,
 });
 
-@autoinject()
-@noView()
-export class DefaultMarkerCustomElement implements IMarkerCustomElement {
+@view('<template class="leaflet-element leaflet-marker"></template>')
+export class DefaultMarkerCustomElement implements ILeafetMarkerCustomElement {
+  private parent?: ILeafletCustomElement;
   private marker?: Marker;
   private disposables!: Disposable[];
-  private isAttached = false;
 
   @bindable({
     defaultBindingMode: bindingMode.twoWay,
@@ -65,10 +66,7 @@ export class DefaultMarkerCustomElement implements IMarkerCustomElement {
   @bindable()
   options?: MarkerOptions;
 
-  constructor(
-    private element: Element,
-    private map: LeafletMapCustomElement,
-  ) {}
+  constructor(@inject(Element) private element: ILeafletElement) {}
 
   bind() {
     if (this.point) {
@@ -78,17 +76,17 @@ export class DefaultMarkerCustomElement implements IMarkerCustomElement {
     this.marker = marker([this.lat, this.lng], this.options);
   }
 
-  attached() {
-    const marker = this.marker;
-    const map = this.map.map;
-    if (!marker || !map) {
-      throw new Error("Element is not bound");
-    }
+  unbind() {
+    delete this.marker;
+  }
 
-    map.addLayer(marker);
+  attached() {
+    this.parent = this.element.parentElement!.au.controller.viewModel;
+
+    this.parent.addLayer(this.marker!);
 
     this.disposables = [
-      listen(marker, "click", (event: LeafletMouseEvent) => {
+      listen(this.marker!, "click", (event: LeafletMouseEvent) => {
         const customEvent = DOM.createCustomEvent("click", {
           bubbles: true,
           detail: this.model,
@@ -104,7 +102,7 @@ export class DefaultMarkerCustomElement implements IMarkerCustomElement {
 
         this.element.dispatchEvent(customEvent);
       }),
-      listen(marker, "drag", (event: LeafletMouseEvent) => {
+      listen(this.marker!, "drag", (event: LeafletMouseEvent) => {
         if (this.options && this.options.draggable) {
           const position = event.latlng;
           this.lat = position.lat;
@@ -116,33 +114,24 @@ export class DefaultMarkerCustomElement implements IMarkerCustomElement {
         }
       }),
     ];
-
-    this.isAttached = true;
   }
 
   detached() {
-    if (!this.marker) {
-      throw new Error("Element is not bound");
-    }
-
-    if (this.map && this.map.map) {
-      this.map.map.removeLayer(this.marker);
-    }
+    this.parent!.removeLayer(this.marker!);
 
     for (const disposable of this.disposables) {
       disposable.dispose();
     }
 
-    this.isAttached = false;
+    delete this.parent;
   }
 
-  unbind() {
-    if (!this.marker) {
-      throw new Error("Element is not bound");
-    }
+  addLayer(layer: Layer): void {
+    this.parent?.addLayer(layer);
+  }
 
-    this.marker.remove();
-    delete this.marker;
+  removeLayer(layer: Layer): void {
+    this.parent?.removeLayer(layer);
   }
 
   pointChanged() {
@@ -153,37 +142,32 @@ export class DefaultMarkerCustomElement implements IMarkerCustomElement {
   }
 
   positionChanged() {
-    if (this.marker && this.isAttached) {
-      this.marker.setLatLng(latLng(this.lat, this.lng));
+    if (!this.parent) {
+      return;
     }
+
+    this.marker!.setLatLng(latLng(this.lat, this.lng));
   }
 
   optionsChanged() {
-    if (
-      this.marker &&
-      this.isAttached &&
-      this.marker.dragging &&
-      this.options
-    ) {
+    if (!this.parent) {
+      return;
+    }
+
+    if (this.marker!.dragging && this.options) {
       if (this.options.draggable) {
-        this.marker.dragging.enable();
+        this.marker!.dragging.enable();
       } else {
-        this.marker.dragging.disable();
+        this.marker!.dragging.disable();
       }
     }
   }
 
   toGeoJSON(precision?: number | false | undefined) {
-    if (!this.marker) {
-      throw new Error("Element is not bound");
-    }
-    return this.marker.toGeoJSON(precision);
+    return this.marker?.toGeoJSON(precision) ?? null;
   }
 
   getLatLng() {
-    if (!this.marker) {
-      throw new Error("Element is not bound");
-    }
-    return this.marker.getLatLng();
+    return this.marker?.getLatLng() ?? null;
   }
 }

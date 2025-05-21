@@ -1,23 +1,20 @@
-import { FrameworkConfiguration, PLATFORM } from "aurelia-framework";
-
-import { AreaSelectedEvent } from "./area-selected-event";
-import { IMarkerCustomElement } from "./marker-custom-element";
-import { LeafletApi } from "./leaflet-api";
+import { CircleMarkerCustomElement } from "./circle-marker";
+import { DefaultMarkerCustomElement } from "./default-marker";
+import { FeatureGroupCustomElement } from "./feature-group";
+import { FrameworkConfiguration } from "aurelia-framework";
 import { LeafletMapCustomElement } from "./leaflet-map";
-import { MarkerClickEvent } from "./marker-click-event";
+
+export type { AreaSelectedEvent } from "./area-selected-event";
+export type { MarkerClickEvent } from "./marker-click-event";
+export type { ILeafetMarkerCustomElement } from "./element";
 
 export function configure(frameworkConfiguration: FrameworkConfiguration) {
   frameworkConfiguration.globalResources([
-    PLATFORM.moduleName("./leaflet-map"),
-    PLATFORM.moduleName("./circle-marker"),
-    PLATFORM.moduleName("./default-marker"),
+    LeafletMapCustomElement,
+    CircleMarkerCustomElement,
+    DefaultMarkerCustomElement,
+    FeatureGroupCustomElement,
   ]);
 }
 
-export {
-  MarkerClickEvent,
-  AreaSelectedEvent,
-  LeafletApi,
-  LeafletMapCustomElement,
-  IMarkerCustomElement,
-};
+export { LeafletMapCustomElement };

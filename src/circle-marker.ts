@@ -3,6 +3,7 @@ import "./circle-marker.css";
 import {
   CircleMarker,
   CircleMarkerOptions,
+  Layer,
   LeafletMouseEvent,
   PopupOptions,
   Tooltip,
@@ -14,25 +15,27 @@ import {
 import {
   DOM,
   Disposable,
-  autoinject,
   bindable,
   bindingMode,
-  noView,
+  inject,
+  view,
 } from "aurelia-framework";
+import {
+  ILeafletCustomElement,
+  ILeafletElement,
+  ILeafetMarkerCustomElement,
+} from "./element";
 
-import { IMarkerCustomElement } from "./marker-custom-element";
 import { LeafletMapCustomElement } from "./leaflet-map";
 import { extend } from "lodash-es";
 import { listen } from "./utils";
 
-@autoinject()
-@noView()
-export class CircleMarkerCustomElement implements IMarkerCustomElement {
+@view('<template class="leaflet-element leaflet-marker"></template>')
+export class CircleMarkerCustomElement implements ILeafetMarkerCustomElement {
+  private parent?: ILeafletCustomElement;
   private marker?: CircleMarker;
   private tooltip?: Tooltip;
   private disposables!: Disposable[];
-  private isAttached = false;
-  private isAdded = false;
 
   @bindable({
     defaultBindingMode: bindingMode.twoWay,
@@ -59,23 +62,20 @@ export class CircleMarkerCustomElement implements IMarkerCustomElement {
   options?: CircleMarkerOptions;
 
   @bindable()
-  delay?: number | string;
-
-  @bindable()
   popup?: string;
-
-  @bindable()
-  text?: string;
 
   @bindable()
   popupOptions?: PopupOptions;
 
   @bindable()
+  text?: string;
+
+  @bindable()
   tooltipOptions?: TooltipOptions;
 
   constructor(
-    private element: Element,
-    private map: LeafletMapCustomElement
+    @inject(Element) private element: ILeafletElement,
+    @inject(LeafletMapCustomElement) private map: LeafletMapCustomElement,
   ) {}
 
   bind() {
@@ -86,15 +86,34 @@ export class CircleMarkerCustomElement implements IMarkerCustomElement {
     this.marker = circleMarker([this.lat, this.lng], this.options);
   }
 
+  unbind() {
+    delete this.marker;
+    delete this.tooltip;
+  }
+
   attached() {
-    const marker = this.marker;
-    const map = this.map.map;
-    if (!marker || !map) {
-      throw new Error("Element is not bound");
+    this.parent = this.element.parentElement!.au.controller.viewModel;
+
+    this.parent.addLayer(this.marker!);
+    if (this.text || this.tooltipOptions) {
+      this.tooltip = tooltip(
+        this.tooltipOptions ?? {
+          permanent: true,
+          direction: "center",
+          className: "marker-text",
+        },
+      );
+
+      if (this.text) {
+        this.tooltip.setContent(this.text);
+      }
+
+      this.tooltip.setLatLng([this.lat, this.lng]); //.addTo(map);
+      this.parent.addLayer(this.tooltip);
     }
 
     this.disposables = [
-      listen(marker, "click", (event: LeafletMouseEvent) => {
+      listen(this.marker!, "click", (event: LeafletMouseEvent) => {
         const customEvent = DOM.createCustomEvent("click", {
           bubbles: true,
           detail: this.model,
@@ -110,67 +129,36 @@ export class CircleMarkerCustomElement implements IMarkerCustomElement {
 
         this.element.dispatchEvent(customEvent);
 
-        if (this.popup) {
-          map.openPopup(this.popup, marker.getLatLng(), this.popupOptions);
+        if (this.map.map && this.marker && this.popup) {
+          this.map.map.openPopup(
+            this.popup,
+            this.marker.getLatLng(),
+            this.popupOptions,
+          );
         }
       }),
     ];
-
-    const addMarker = () => {
-      map.addLayer(marker);
-      if (this.text || this.tooltipOptions) {
-        this.tooltip = tooltip(
-          this.tooltipOptions ?? {
-            permanent: true,
-            direction: "center",
-            className: "marker-text",
-          }
-        );
-
-        if (this.text) {
-          this.tooltip.setContent(this.text);
-        }
-
-        this.tooltip.setLatLng([this.lat, this.lng]).addTo(map);
-      }
-      this.isAdded = true;
-    };
-
-    if (this.delay !== undefined) {
-      this.disposables.push(createTimeout(addMarker, Number(this.delay)));
-    } else {
-      addMarker();
-    }
-
-    this.isAttached = true;
   }
 
   detached() {
-    if (!this.marker) {
-      throw new Error("Element is not bound");
-    }
-
-    if (this.map && this.map.map && this.isAdded) {
-      this.map.map.removeLayer(this.marker);
+    this.parent!.removeLayer(this.marker!);
+    if (this.tooltip) {
+      this.parent!.removeLayer(this.tooltip);
     }
 
     for (const disposable of this.disposables) {
       disposable.dispose();
     }
 
-    this.isAttached = false;
+    delete this.parent;
   }
 
-  unbind() {
-    if (!this.marker) {
-      throw new Error("Element is not bound");
-    }
+  addLayer(layer: Layer): void {
+    this.parent?.addLayer(layer);
+  }
 
-    this.marker.remove();
-    delete this.marker;
-
-    this.tooltip?.remove();
-    delete this.tooltip;
+  removeLayer(layer: Layer): void {
+    this.parent?.addLayer(layer);
   }
 
   pointChanged() {
@@ -181,21 +169,27 @@ export class CircleMarkerCustomElement implements IMarkerCustomElement {
   }
 
   positionChanged() {
-    if (this.marker && this.isAttached) {
-      const pos = latLng(this.lat, this.lng);
-      this.marker.setLatLng(pos);
-      this.tooltip?.setLatLng(pos);
+    if (!this.parent) {
+      return;
     }
+
+    const pos = latLng(this.lat, this.lng);
+    this.marker!.setLatLng(pos);
+    this.tooltip?.setLatLng(pos);
   }
 
   optionsChanged() {
-    if (this.marker && this.isAttached && this.options) {
-      this.marker.setStyle(this.options);
+    if (!this.parent) {
+      return;
+    }
+
+    if (this.options) {
+      this.marker!.setStyle(this.options);
     }
   }
 
   textChanged() {
-    if (!this.isAttached) {
+    if (!this.parent) {
       return;
     }
     if (this.text) {
@@ -207,43 +201,34 @@ export class CircleMarkerCustomElement implements IMarkerCustomElement {
             permanent: true,
             direction: "center",
             className: "marker-text",
-          }
+          },
         )
           .setContent(this.text)
           .setLatLng([this.lat, this.lng])
           .addTo(this.map.map!);
       }
     } else if (this.tooltip) {
-      this.tooltip.remove();
+      this.parent.removeLayer(this.tooltip);
       delete this.tooltip;
     }
   }
 
   tooltipOptionsChanged() {
-    if (!this.isAttached || !this.tooltip) {
+    if (!this.parent) {
       return;
     }
-    this.tooltip.options.content = this.tooltipOptions?.content;
-    this.tooltip.options.className = this.tooltipOptions?.className;
+
+    if (this.tooltip) {
+      this.tooltip.options.content = this.tooltipOptions?.content;
+      this.tooltip.options.className = this.tooltipOptions?.className;
+    }
   }
 
   toGeoJSON(precision?: number | false | undefined) {
-    if (!this.marker) {
-      throw new Error("Element is not bound");
-    }
-    return this.marker.toGeoJSON(precision);
+    return this.marker?.toGeoJSON(precision) ?? null;
   }
 
   getLatLng() {
-    if (!this.marker) {
-      throw new Error("Element is not bound");
-    }
-    return this.marker.getLatLng();
+    return this.marker?.getLatLng() ?? null;
   }
-}
-
-function createTimeout(handler: Function, timeout: number): Disposable {
-  const handle = setTimeout(handler, timeout);
-
-  return { dispose: () => clearTimeout(handle) };
 }

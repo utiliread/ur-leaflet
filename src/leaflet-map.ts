@@ -6,107 +6,87 @@ import "./leaflet-map.css";
 
 import {
   DOM,
+  TaskQueue,
   autoinject,
   bindable,
-  bindingMode,
-  children,
+  inject,
 } from "aurelia-framework";
 import {
   LatLngBounds,
+  Layer,
   Map,
   MapOptions,
   control,
-  latLngBounds,
+  featureGroup,
   map,
   tileLayer,
 } from "leaflet";
 
 import { AreaSelectedEventDetail } from "./area-selected-event";
 import {
-  IMarkerCustomElement,
-  isMarkerCustomElement,
-} from "./marker-custom-element";
+  ILeafletCustomElement,
+  ILeafletElement,
+  ILeafetMarkerCustomElement,
+} from "./element";
 import { LatLng } from "leaflet";
-import { LeafletApi } from "./leaflet-api";
 
-@autoinject()
-export class LeafletMapCustomElement {
+export class LeafletMapCustomElement implements ILeafletCustomElement {
+  map?: Map;
   private isAttached = false;
-  private hasBounds = false;
-
-  element: HTMLElement;
 
   @bindable()
   options: MapOptions = {
     fullscreenControl: true,
   };
 
-  @bindable({ defaultBindingMode: bindingMode.twoWay })
-  api?: LeafletApi;
-
   @bindable()
   fitBounds: boolean | "true" | "false" = true;
 
-  @children("*")
-  markers!: (unknown | IMarkerCustomElement)[];
+  private layers: Layer[] = [];
+  private fitBoundsScheduled = false;
+  private hasBounds = false;
 
-  map?: Map;
-
-  constructor(element: Element) {
+  constructor(
+    @inject(Element) private element: HTMLElement,
+    @inject(TaskQueue) private taskQueue: TaskQueue
+  ) {
     this.element = element as HTMLElement;
   }
 
+  // This is the first bind call - all children are bound after this
   bind() {
     // Create map here so that components that use the api can get the map in their attached() lifecycle hook
-    const mapInstance = (this.map = map(this.element, this.options));
+    this.map = map(this.element, this.options);
+  }
 
-    this.api = {
-      getMap: () => mapInstance,
-      goto: this.goto.bind(this),
-    };
+  unbind() {
+    delete this.map;
   }
 
   attached() {
-    const map = this.map;
-    if (!map) {
-      throw new Error("Element is not bound");
-    }
     const baseLayers = {
       Kort: tileLayer("//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
         attribution:
           '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-      }).addTo(map),
+      }).addTo(this.map!),
       Satellit: tileLayer(
         "//server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
         {
           attribution: '&copy; <a href="http://www.esri.com">Esri</a>',
-        },
+        }
       ),
     };
 
-    control.layers(baseLayers).addTo(map);
+    control.layers(baseLayers).addTo(this.map!);
 
-    if (this.markers) {
-      if (this.fitBounds.toString() === "true") {
-        const latlngs = this.markers
-          .filter(isMarkerCustomElement)
-          .map((x) => x.getLatLng())
-          .filter((x) => !!x);
-        if (latlngs.length) {
-          const bounds = latLngBounds(latlngs);
-
-          if (bounds.isValid()) {
-            map.fitBounds(bounds);
-            this.hasBounds = true;
-          }
-        }
-      }
-    }
-
-    map.on("selectarea:selected", (event) => {
+    this.map!.on("selectarea:selected", (event) => {
       const bounds = (<any>event).bounds as LatLngBounds;
+
       const selected = this.getMarkers()
-        .filter((x) => bounds.contains(x.getLatLng()))
+        .filter((x) => {
+          const ll = x.getLatLng();
+          return ll && bounds.contains(ll);
+        })
         .map((x) => x.model);
 
       const detail: AreaSelectedEventDetail = {
@@ -126,38 +106,55 @@ export class LeafletMapCustomElement {
   }
 
   detached() {
-    if (!this.map) {
-      throw new Error("Element is not bound");
-    }
-
-    this.map.remove();
-    delete this.map;
-    delete this.api;
+    this.map!.remove();
     this.isAttached = false;
   }
 
-  markersChanged() {
-    if (this.map && this.isAttached) {
-      if (this.fitBounds.toString() === "true") {
-        const bounds = latLngBounds(
-          this.getMarkers()
-            .map((x) => x.getLatLng())
-            .filter((x) => !!x),
-        );
-
-        if (
-          bounds.isValid() &&
-          (!this.hasBounds || !this.map.getBounds().equals(bounds))
-        ) {
-          this.map.fitBounds(bounds);
-          this.hasBounds = true;
+  addLayer(layer: Layer, defer?: boolean): void {
+    if (defer) {
+      this.taskQueue.queueMicroTask(() => {
+        if (!this.map) {
+          return;
         }
-      }
+        layer.addTo(this.map);
+      });
+    } else if (this.map) {
+      layer.addTo(this.map);
+    }
+    this.layers.push(layer);
+
+    if (this.fitBounds.toString() === "true" && !this.fitBoundsScheduled) {
+      this.taskQueue.queueTask(() => {
+        if (this.map && this.isAttached && this.layers.length > 0) {
+          const bounds = featureGroup(this.layers).getBounds();
+          if (bounds.isValid()) {
+            if (!this.hasBounds) {
+              this.map.fitBounds(bounds);
+              this.hasBounds = true;
+            } else if (!this.map.getBounds().equals(bounds)) {
+              this.map.flyToBounds(bounds);
+            }
+          }
+        }
+        this.fitBoundsScheduled = false;
+      });
+      this.fitBoundsScheduled = true;
     }
   }
 
   getMarkers() {
-    return this.markers.filter(isMarkerCustomElement);
+    const elements: ILeafletElement<ILeafetMarkerCustomElement>[] = Array.from(
+      this.element.querySelectorAll(".leaflet-element.leaflet-marker")
+    );
+    return elements.map((x) => x.au.controller.viewModel);
+  }
+
+  removeLayer(layer: Layer): void {
+    this.map?.removeLayer(layer);
+    const index = this.layers.indexOf(layer);
+    if (index > -1) {
+      this.layers.splice(index, 1);
+    }
   }
 
   goto(center: LatLng, zoom?: number) {
