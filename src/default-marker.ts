@@ -23,13 +23,13 @@ import {
 
 import { extend } from "lodash-es";
 import { listen } from "./utils";
+import iconRetinaUrl from "leaflet/dist/images/marker-icon-2x.png";
+import iconUrl from "leaflet/dist/images/marker-icon.png";
+import shadowUrl from "leaflet/dist/images/marker-shadow.png";
 
 // https://github.com/Leaflet/Leaflet/issues/4968#issuecomment-299044745
 const defaultIconPrototype: any = Icon.Default.prototype;
 delete defaultIconPrototype._getIconUrl;
-const iconRetinaUrl = require("leaflet/dist/images/marker-icon-2x.png");
-const iconUrl = require("leaflet/dist/images/marker-icon.png");
-const shadowUrl = require("leaflet/dist/images/marker-shadow.png");
 Icon.Default.mergeOptions({
   iconRetinaUrl: iconRetinaUrl.default ?? iconRetinaUrl,
   iconUrl: iconUrl.default ?? iconUrl,

@@ -1,8 +1,5 @@
 import { FeatureGroup, Layer, featureGroup } from "leaflet";
-import {
-  ILeafletCustomElement,
-  ILeafletElement,
-} from "./element";
+import { ILeafletCustomElement, ILeafletElement } from "./element";
 import { bindable, inject, view } from "aurelia-framework";
 
 @view('<template class="leaflet-element"><slot></slot></template>')

@@ -14,7 +14,7 @@ export interface ILeafletCustomElement {
 export interface ILeafetMarkerCustomElement<P = any>
   extends ILeafletCustomElement {
   toGeoJSON(
-    precision?: number | false
+    precision?: number | false,
   ): GeoJSON.Feature<GeoJSON.Point, P> | null;
   getLatLng: () => LatLng | null;
   model: any;

@@ -48,7 +48,7 @@ export class LeafletMapCustomElement implements ILeafletCustomElement {
 
   constructor(
     @inject(Element) private element: HTMLElement,
-    @inject(TaskQueue) private taskQueue: TaskQueue
+    @inject(TaskQueue) private taskQueue: TaskQueue,
   ) {
     this.element = element as HTMLElement;
   }
@@ -73,7 +73,7 @@ export class LeafletMapCustomElement implements ILeafletCustomElement {
         "//server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
         {
           attribution: '&copy; <a href="http://www.esri.com">Esri</a>',
-        }
+        },
       ),
     };
 
@@ -144,7 +144,7 @@ export class LeafletMapCustomElement implements ILeafletCustomElement {
 
   getMarkers() {
     const elements: ILeafletElement<ILeafetMarkerCustomElement>[] = Array.from(
-      this.element.querySelectorAll(".leaflet-element.leaflet-marker")
+      this.element.querySelectorAll(".leaflet-element.leaflet-marker"),
     );
     return elements.map((x) => x.au.controller.viewModel);
   }
