@@ -3,6 +3,7 @@ import {
   Disposable,
   bindable,
   bindingMode,
+  customElement,
   inject,
   view,
 } from "aurelia-framework";
@@ -36,6 +37,7 @@ Icon.Default.mergeOptions({
   shadowUrl: shadowUrl.default ?? shadowUrl,
 });
 
+@customElement("deafault-marker")
 @view('<template class="leaflet-element leaflet-marker"></template>')
 export class DefaultMarkerCustomElement implements ILeafetMarkerCustomElement {
   private parent?: ILeafletCustomElement;

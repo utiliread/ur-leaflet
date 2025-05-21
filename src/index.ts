@@ -17,4 +17,4 @@ export function configure(frameworkConfiguration: FrameworkConfiguration) {
   ]);
 }
 
-export { LeafletMapCustomElement };
+export { LeafletMapCustomElement as LeafletMap };

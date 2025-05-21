@@ -1,7 +1,8 @@
 import { FeatureGroup, Layer, featureGroup } from "leaflet";
 import { ILeafletCustomElement, ILeafletElement } from "./element";
-import { bindable, inject, view } from "aurelia-framework";
+import { bindable, customElement, inject, view } from "aurelia-framework";
 
+@customElement("feature-group")
 @view('<template class="leaflet-element"><slot></slot></template>')
 export class FeatureGroupCustomElement implements ILeafletCustomElement {
   private parent?: ILeafletCustomElement;

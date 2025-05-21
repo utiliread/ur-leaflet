@@ -7,8 +7,8 @@ import "./leaflet-map.css";
 import {
   DOM,
   TaskQueue,
-  autoinject,
   bindable,
+  customElement,
   inject,
 } from "aurelia-framework";
 import {
@@ -30,6 +30,7 @@ import {
 } from "./element";
 import { LatLng } from "leaflet";
 
+@customElement("leaflet-map")
 export class LeafletMapCustomElement implements ILeafletCustomElement {
   map?: Map;
   private isAttached = false;

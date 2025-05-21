@@ -17,6 +17,7 @@ import {
   Disposable,
   bindable,
   bindingMode,
+  customElement,
   inject,
   view,
 } from "aurelia-framework";
@@ -30,6 +31,7 @@ import { LeafletMapCustomElement } from "./leaflet-map";
 import { extend } from "lodash-es";
 import { listen } from "./utils";
 
+@customElement("circle-marker")
 @view('<template class="leaflet-element leaflet-marker"></template>')
 export class CircleMarkerCustomElement implements ILeafetMarkerCustomElement {
   private parent?: ILeafletCustomElement;
