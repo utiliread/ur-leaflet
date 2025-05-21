@@ -4,7 +4,7 @@ import typescript from "@rollup/plugin-typescript";
 /** @type {import('rollup').RollupOptions} */
 const options = {
   input: "src/index.ts",
-  external: [/\.\/.*\.css$/],
+  external: [/\.\/.*\.(css|html)$/],
   plugins: [
     typescript(),
     copy({ targets: [{ src: "src/**/*.{css,html}", dest: "dist" }] }),

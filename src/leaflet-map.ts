@@ -4,12 +4,14 @@ import "leaflet/dist/leaflet.css";
 import "leaflet-fullscreen/dist/leaflet.fullscreen.css";
 import "./leaflet-map.css";
 
+import template from "./leaflet-map.html";
 import {
   DOM,
   TaskQueue,
   bindable,
   customElement,
   inject,
+  view,
 } from "aurelia-framework";
 import {
   LatLngBounds,
@@ -31,6 +33,7 @@ import {
 import { LatLng } from "leaflet";
 
 @customElement("leaflet-map")
+@view(template)
 export class LeafletMapCustomElement implements ILeafletCustomElement {
   map?: Map;
   private isAttached = false;
