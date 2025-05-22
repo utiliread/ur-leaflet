@@ -10,7 +10,7 @@ import {
 import {
   ILeafletCustomElement,
   ILeafletElement,
-  ILeafetMarkerCustomElement,
+  ILeafletMarkerCustomElement,
 } from "./element";
 import {
   Icon,
@@ -39,7 +39,7 @@ Icon.Default.mergeOptions({
 
 @customElement("deafault-marker")
 @view('<template class="leaflet-element leaflet-marker"></template>')
-export class DefaultMarkerCustomElement implements ILeafetMarkerCustomElement {
+export class DefaultMarkerCustomElement implements ILeafletMarkerCustomElement {
   private parent?: ILeafletCustomElement;
   private marker?: Marker;
   private disposables!: Disposable[];

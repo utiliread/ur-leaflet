@@ -28,7 +28,7 @@ import { AreaSelectedEventDetail } from "./area-selected-event";
 import {
   ILeafletCustomElement,
   ILeafletElement,
-  ILeafetMarkerCustomElement,
+  ILeafletMarkerCustomElement,
 } from "./element";
 import { LatLng } from "leaflet";
 
@@ -147,7 +147,7 @@ export class LeafletMapCustomElement implements ILeafletCustomElement {
   }
 
   getMarkers() {
-    const elements: ILeafletElement<ILeafetMarkerCustomElement>[] = Array.from(
+    const elements: ILeafletElement<ILeafletMarkerCustomElement>[] = Array.from(
       this.element.querySelectorAll(".leaflet-element.leaflet-marker"),
     );
     return elements.map((x) => x.au.controller.viewModel);

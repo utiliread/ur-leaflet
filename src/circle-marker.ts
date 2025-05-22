@@ -24,7 +24,7 @@ import {
 import {
   ILeafletCustomElement,
   ILeafletElement,
-  ILeafetMarkerCustomElement,
+  ILeafletMarkerCustomElement,
 } from "./element";
 
 import { LeafletMapCustomElement } from "./leaflet-map";
@@ -33,7 +33,7 @@ import { listen } from "./utils";
 
 @customElement("circle-marker")
 @view('<template class="leaflet-element leaflet-marker"></template>')
-export class CircleMarkerCustomElement implements ILeafetMarkerCustomElement {
+export class CircleMarkerCustomElement implements ILeafletMarkerCustomElement {
   private parent?: ILeafletCustomElement;
   private marker?: CircleMarker;
   private tooltip?: Tooltip;

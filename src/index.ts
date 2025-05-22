@@ -6,7 +6,7 @@ import { LeafletMapCustomElement } from "./leaflet-map";
 
 export type { AreaSelectedEvent } from "./area-selected-event";
 export type { MarkerClickEvent } from "./marker-click-event";
-export type { ILeafetMarkerCustomElement } from "./element";
+export type { ILeafletMarkerCustomElement } from "./element";
 
 export function configure(frameworkConfiguration: FrameworkConfiguration) {
   frameworkConfiguration.globalResources([

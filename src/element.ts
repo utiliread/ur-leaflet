@@ -11,7 +11,7 @@ export interface ILeafletCustomElement {
   removeLayer(layer: Layer): void;
 }
 
-export interface ILeafetMarkerCustomElement<P = any>
+export interface ILeafletMarkerCustomElement<P = any>
   extends ILeafletCustomElement {
   toGeoJSON(
     precision?: number | false,
