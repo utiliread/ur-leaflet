@@ -129,11 +129,15 @@ export class DefaultMarkerCustomElement implements ILeafletMarkerCustomElement {
   }
 
   addLayer(layer: Layer): void {
-    this.parent?.addLayer(layer);
+    throw new Error("Invalid operation");
   }
 
   removeLayer(layer: Layer): void {
-    this.parent?.removeLayer(layer);
+    throw new Error("Invalid operation");
+  }
+
+  getMarkers(): ILeafletMarkerCustomElement[] {
+    return [this];
   }
 
   pointChanged() {

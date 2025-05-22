@@ -9,6 +9,7 @@ export interface ILeafletElement<VM = ILeafletCustomElement>
 export interface ILeafletCustomElement {
   addLayer(layer: Layer, defer?: boolean): void;
   removeLayer(layer: Layer): void;
+  getMarkers(): ILeafletMarkerCustomElement[];
 }
 
 export interface ILeafletMarkerCustomElement<P = any>

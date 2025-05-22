@@ -9,6 +9,7 @@ import {
   DOM,
   TaskQueue,
   bindable,
+  children,
   customElement,
   inject,
   view,
@@ -49,6 +50,9 @@ export class LeafletMapCustomElement implements ILeafletCustomElement {
   private layers: Layer[] = [];
   private fitBoundsScheduled = false;
   private hasBounds = false;
+
+  @children(".leaflet-element")
+  private children?: ILeafletCustomElement[];
 
   constructor(
     @inject(Element) private element: HTMLElement,
@@ -146,19 +150,19 @@ export class LeafletMapCustomElement implements ILeafletCustomElement {
     }
   }
 
-  getMarkers() {
-    const elements: ILeafletElement<ILeafletMarkerCustomElement>[] = Array.from(
-      this.element.querySelectorAll(".leaflet-element.leaflet-marker"),
-    );
-    return elements.map((x) => x.au.controller.viewModel);
-  }
-
   removeLayer(layer: Layer): void {
     this.map?.removeLayer(layer);
     const index = this.layers.indexOf(layer);
     if (index > -1) {
       this.layers.splice(index, 1);
     }
+  }
+
+  getMarkers() {
+    if (!this.children) {
+      return [];
+    }
+    return this.children.map((x) => x.getMarkers()).flat();
   }
 
   goto(center: LatLng, zoom?: number) {

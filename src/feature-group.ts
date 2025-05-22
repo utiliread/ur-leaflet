@@ -1,6 +1,12 @@
 import { FeatureGroup, Layer, featureGroup } from "leaflet";
 import { ILeafletCustomElement, ILeafletElement } from "./element";
-import { bindable, customElement, inject, view } from "aurelia-framework";
+import {
+  bindable,
+  children,
+  customElement,
+  inject,
+  view,
+} from "aurelia-framework";
 
 @customElement("feature-group")
 @view('<template class="leaflet-element"><slot></slot></template>')
@@ -13,11 +19,10 @@ export class FeatureGroupCustomElement implements ILeafletCustomElement {
   name?: string;
 
   @bindable()
-  hidden: boolean | "true" | "false" = false;
-
-  @bindable()
   defer: boolean | "true" | "false" = true;
 
+  @children("*")
+  private children?: ILeafletCustomElement[];
   constructor(@inject(Element) private element: ILeafletElement) {}
 
   bind() {
@@ -64,5 +69,12 @@ export class FeatureGroupCustomElement implements ILeafletCustomElement {
 
   removeLayer(layer: Layer): void {
     this.featureGroup?.removeLayer(layer);
+  }
+
+  getMarkers() {
+    if (!this.children || this.hidden) {
+      return [];
+    }
+    return this.children.map((x) => x.getMarkers()).flat();
   }
 }
