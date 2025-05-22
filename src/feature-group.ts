@@ -14,6 +14,9 @@ export class FeatureGroupCustomElement implements ILeafletCustomElement {
   private parent?: ILeafletCustomElement;
   private featureGroup?: FeatureGroup;
   private added = false;
+  private classAttributeObserver = new MutationObserver((_) => {
+    this.classAttributeChanged();
+  });
 
   @bindable()
   name?: string;
@@ -23,6 +26,11 @@ export class FeatureGroupCustomElement implements ILeafletCustomElement {
 
   @children("*")
   private children?: ILeafletCustomElement[];
+
+  private get hidden() {
+    return this.element.classList.contains("aurelia-hide");
+  }
+
   constructor(@inject(Element) private element: ILeafletElement) {}
 
   bind() {
@@ -36,7 +44,11 @@ export class FeatureGroupCustomElement implements ILeafletCustomElement {
   attached() {
     this.parent = this.element.parentElement!.au.controller.viewModel;
 
-    if (this.hidden.toString() === "false") {
+    this.classAttributeObserver.observe(this.element, {
+      attributeFilter: ["class"],
+    });
+
+    if (!this.hidden) {
       const defer = this.defer.toString() === "true";
       this.parent.addLayer(this.featureGroup!, defer);
       this.added = true;
@@ -48,13 +60,16 @@ export class FeatureGroupCustomElement implements ILeafletCustomElement {
       this.parent!.removeLayer(this.featureGroup!);
       this.added = false;
     }
+
+    this.classAttributeObserver.disconnect();
+
   }
 
-  hiddenChanged() {
+  private classAttributeChanged() {
     if (!this.parent) {
       return;
     }
-    if (this.hidden.toString() === "false") {
+    if (!this.hidden) {
       this.parent.addLayer(this.featureGroup!);
       this.added = true;
     } else if (this.added) {
