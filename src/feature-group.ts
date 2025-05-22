@@ -14,9 +14,9 @@ export class FeatureGroupCustomElement implements ILeafletCustomElement {
   private parent?: ILeafletCustomElement;
   private featureGroup?: FeatureGroup;
   private added = false;
-  private classAttributeObserver = new MutationObserver((_) => {
-    this.classAttributeChanged();
-  });
+  private classAttributeObserver = new MutationObserver((_) =>
+    this.classAttributeChanged()
+  );
 
   @bindable()
   name?: string;
