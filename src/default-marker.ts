@@ -37,7 +37,7 @@ Icon.Default.mergeOptions({
   shadowUrl: shadowUrl.default ?? shadowUrl,
 });
 
-@customElement("deafault-marker")
+@customElement("default-marker")
 @view('<template class="leaflet-element leaflet-marker"></template>')
 export class DefaultMarkerCustomElement implements ILeafletMarkerCustomElement {
   private parent?: ILeafletCustomElement;
