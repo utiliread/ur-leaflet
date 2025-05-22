@@ -37,7 +37,6 @@ import { LatLng } from "leaflet";
 @view(template)
 export class LeafletMapCustomElement implements ILeafletCustomElement {
   map?: Map;
-  private isAttached = false;
 
   @bindable()
   options: MapOptions = {
@@ -47,7 +46,7 @@ export class LeafletMapCustomElement implements ILeafletCustomElement {
   @bindable()
   fitBounds: boolean | "true" | "false" = true;
 
-  private layers: Layer[] = [];
+  private layers?: Layer[];
   private fitBoundsScheduled = false;
   private hasBounds = false;
 
@@ -67,10 +66,12 @@ export class LeafletMapCustomElement implements ILeafletCustomElement {
     this.map = map(this.element, this.options);
   }
 
+  // This is the first unbind call - all children are unbound after this
   unbind() {
     delete this.map;
   }
 
+  // This is the first attached call - all children are attached after this
   attached() {
     const baseLayers = {
       Kort: tileLayer("//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
@@ -110,15 +111,24 @@ export class LeafletMapCustomElement implements ILeafletCustomElement {
       this.element.dispatchEvent(areaSelectedEvent);
     });
 
-    this.isAttached = true;
+    this.layers = [];
   }
 
+  // This is the first detached call - all children are detached after this
   detached() {
     this.map!.remove();
-    this.isAttached = false;
+
+    // Delete layers now, before all children are detached,
+    // allows us to have a "fast path" for removing layers
+    // when the entire map is removed
+    delete this.layers;
   }
 
   addLayer(layer: Layer, defer?: boolean): void {
+    if (!this.layers) {
+      return; // Ignore; not attached anymore
+    }
+
     if (defer) {
       this.taskQueue.queueMicroTask(() => {
         if (!this.map) {
@@ -126,14 +136,15 @@ export class LeafletMapCustomElement implements ILeafletCustomElement {
         }
         layer.addTo(this.map);
       });
-    } else if (this.map) {
-      layer.addTo(this.map);
+    } else {
+      layer.addTo(this.map!);
     }
+
     this.layers.push(layer);
 
     if (this.fitBounds.toString() === "true" && !this.fitBoundsScheduled) {
       this.taskQueue.queueTask(() => {
-        if (this.map && this.isAttached && this.layers.length > 0) {
+        if (this.map && this.layers && this.layers.length > 0) {
           const bounds = featureGroup(this.layers).getBounds();
           if (bounds.isValid()) {
             if (!this.hasBounds) {
@@ -151,6 +162,10 @@ export class LeafletMapCustomElement implements ILeafletCustomElement {
   }
 
   removeLayer(layer: Layer): void {
+    if (!this.layers) {
+      return; // Ignore; not attached anymore
+    }
+
     this.map?.removeLayer(layer);
     const index = this.layers.indexOf(layer);
     if (index > -1) {

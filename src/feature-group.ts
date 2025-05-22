@@ -63,6 +63,7 @@ export class FeatureGroupCustomElement implements ILeafletCustomElement {
 
     this.classAttributeObserver.disconnect();
 
+    delete this.parent;
   }
 
   private classAttributeChanged() {
@@ -79,10 +80,16 @@ export class FeatureGroupCustomElement implements ILeafletCustomElement {
   }
 
   addLayer(layer: Layer): void {
+    if (!this.parent) {
+      return;
+    }
     this.featureGroup?.addLayer(layer);
   }
 
   removeLayer(layer: Layer): void {
+    if (!this.parent) {
+      return;
+    }
     this.featureGroup?.removeLayer(layer);
   }
 
