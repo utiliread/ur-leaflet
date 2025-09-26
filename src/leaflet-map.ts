@@ -26,11 +26,7 @@ import {
 } from "leaflet";
 
 import { AreaSelectedEventDetail } from "./area-selected-event";
-import {
-  ILeafletCustomElement,
-  ILeafletElement,
-  ILeafletMarkerCustomElement,
-} from "./element";
+import { ILeafletCustomElement } from "./element";
 import { LatLng } from "leaflet";
 
 @customElement("leaflet-map")
@@ -43,11 +39,11 @@ export class LeafletMapCustomElement implements ILeafletCustomElement {
     fullscreenControl: true,
   };
 
-  @bindable()
+  @bindable({ changeHandler: "handleFitBounds" })
   fitBounds: boolean | "true" | "false" = true;
 
   private layers?: Layer[];
-  private fitBoundsScheduled = false;
+  private runFitBounds = false;
   private hasBounds = false;
 
   @children(".leaflet-element")
@@ -142,23 +138,7 @@ export class LeafletMapCustomElement implements ILeafletCustomElement {
 
     this.layers.push(layer);
 
-    if (this.fitBounds.toString() === "true" && !this.fitBoundsScheduled) {
-      this.taskQueue.queueTask(() => {
-        if (this.map && this.layers && this.layers.length > 0) {
-          const bounds = featureGroup(this.layers).getBounds();
-          if (bounds.isValid()) {
-            if (!this.hasBounds) {
-              this.map.fitBounds(bounds);
-              this.hasBounds = true;
-            } else if (!this.map.getBounds().equals(bounds)) {
-              this.map.flyToBounds(bounds);
-            }
-          }
-        }
-        this.fitBoundsScheduled = false;
-      });
-      this.fitBoundsScheduled = true;
-    }
+    this.handleFitBounds();
   }
 
   removeLayer(layer: Layer): void {
@@ -190,6 +170,36 @@ export class LeafletMapCustomElement implements ILeafletCustomElement {
       } else {
         this.map.panTo(center);
       }
+    }
+  }
+
+  private handleFitBounds() {
+    if (this.fitBounds.toString() === "true") {
+      // Defer to allow multiple layers to be added in the same turn
+      if (!this.runFitBounds) {
+        this.taskQueue.queueTask(() => {
+          if (!this.runFitBounds) {
+            return; // Ignore; was cancelled in the meantime
+          }
+          if (this.map && this.layers && this.layers.length > 0) {
+            const bounds = featureGroup(this.layers).getBounds();
+            if (bounds.isValid()) {
+              if (!this.hasBounds) {
+                this.map.fitBounds(bounds);
+                this.hasBounds = true;
+              } else if (!this.map.getBounds().equals(bounds)) {
+                this.map.flyToBounds(bounds);
+              }
+            }
+          }
+          this.runFitBounds = false;
+        });
+
+        this.runFitBounds = true;
+      }
+    } else {
+      // Ensure that we don't run a deferred fitBounds
+      this.runFitBounds = false;
     }
   }
 }
