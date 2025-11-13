@@ -190,7 +190,16 @@ export class CircleMarkerCustomElement implements ILeafletMarkerCustomElement {
     }
 
     if (this.options) {
-      this.marker!.setStyle(this.options);
+      let options = this.options;
+      if (this.marker?.options.weight === options.weight) {
+        // Weight did not change
+        // remove the property from the options to avoid a leaflet bug
+        // https://github.com/Leaflet/Leaflet/issues/9192
+        // This issue shows in Operations->Netlists->Places
+        options = extend({}, this.options);
+        delete options.weight;
+      }
+      this.marker!.setStyle(options);
     }
   }
 
